@@ -10,7 +10,7 @@ const CardioWorkout = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-black text-white p-4 md:p-8">
             <div className="max-w-6xl mx-auto space-y-8">
-                {/* Enhanced Header Section */}
+               
                 <div className="relative">
                     <div className="absolute -top-20 -right-20 w-96 h-96 bg-purple-500 rounded-full filter blur-[128px] opacity-20" />
                     <div className="relative space-y-4">
@@ -33,7 +33,7 @@ const CardioWorkout = () => {
                     </div>
                 </div>
 
-                {/* Enhanced Navigation */}
+                
                 <div className="flex gap-4 p-1 bg-zinc-900/50 backdrop-blur-lg rounded-xl w-fit">
                     {['overview', 'tutorial'].map((tab) => (
                         <button
@@ -49,11 +49,11 @@ const CardioWorkout = () => {
                     ))}
                 </div>
 
-                {/* Enhanced Content */}
+                
                 <div className="space-y-8">
                     {activeTab === 'overview' && (
                         <>
-                            {/* Stats Cards */}
+                           
                             <div className="grid md:grid-cols-3 gap-6">
                                 {[
                                     { icon: Timer, color: 'text-blue-400', bgColor: 'bg-blue-400/10', title: 'Duration', value: '30 min', desc: 'Optimal workout length' },
@@ -74,9 +74,9 @@ const CardioWorkout = () => {
                                 ))}
                             </div>
 
-                            {/* Benefits & Trainer Section */}
+                          
                             <div className="grid md:grid-cols-2 gap-6">
-                                {/* Benefits Card */}
+                                
                                 <div className="relative overflow-hidden group">
                                     <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 backdrop-blur-xl rounded-2xl" />
                                     <div className="relative p-6 space-y-6">
@@ -108,7 +108,7 @@ const CardioWorkout = () => {
                                     </div>
                                 </div>
 
-                                {/* Trainer Profile Card */}
+  
                                 <div className="relative overflow-hidden group">
                                     <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 backdrop-blur-xl rounded-2xl" />
                                     <div className="relative p-6">

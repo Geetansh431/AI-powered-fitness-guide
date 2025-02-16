@@ -13,12 +13,12 @@ const PersonalizedTraining = () => {
     const [queryHistory, setQueryHistory] = useState([]);
     const [activeTab, setActiveTab] = useState("ask");
     const [characterCount, setCharacterCount] = useState(0);
-    const [selectedHistoryItem, setSelectedHistoryItem] = useState(null); // For viewing full history chats
-    const [isSaved, setIsSaved] = useState(false); // Track if the current response is saved
+    const [selectedHistoryItem, setSelectedHistoryItem] = useState(null); 
+    const [isSaved, setIsSaved] = useState(false); 
 
-    const API_KEY = "AIzaSyAskR1GqZzlZXYfZO4kmFt37PN9zAAvyPs"; // Replace with your actual API key
+    const API_KEY = "AIzaSyAskR1GqZzlZXYfZO4kmFt37PN9zAAvyPs";
 
-    // Load saved queries and history from localStorage on component mount
+  
     useEffect(() => {
         const saved = localStorage.getItem("savedQueries");
         const history = localStorage.getItem("queryHistory");
@@ -26,7 +26,7 @@ const PersonalizedTraining = () => {
         if (history) setQueryHistory(JSON.parse(history));
     }, []);
 
-    // Save queries and history to localStorage whenever they change
+   
     useEffect(() => {
         localStorage.setItem("savedQueries", JSON.stringify(savedQueries));
     }, [savedQueries]);
@@ -43,7 +43,7 @@ const PersonalizedTraining = () => {
 
         setIsLoading(true);
         setError("");
-        setIsSaved(false); // Reset saved state for new queries
+        setIsSaved(false); 
 
         const url = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${API_KEY}`;
 
@@ -64,7 +64,7 @@ const PersonalizedTraining = () => {
                 const aiResponse = res.data.candidates[0].content.parts[0].text;
                 setResponse(aiResponse);
 
-                // Add to query history
+                
                 const newHistory = [...queryHistory, { query, response: aiResponse, timestamp: new Date().toISOString() }];
                 setQueryHistory(newHistory);
             } else {
@@ -82,7 +82,7 @@ const PersonalizedTraining = () => {
         if (query && response) {
             const newSavedQueries = [...savedQueries, { query, response, timestamp: new Date().toISOString() }];
             setSavedQueries(newSavedQueries);
-            setIsSaved(true); // Mark as saved
+            setIsSaved(true); 
         }
     };
 
@@ -187,7 +187,7 @@ const PersonalizedTraining = () => {
                                     </div>
                                     <button
                                         onClick={saveQuery}
-                                        disabled={isSaved} // Disable button if already saved
+                                        disabled={isSaved} 
                                         className="flex items-center gap-2 px-4 py-2 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition-colors"
                                     >
                                         {isSaved ? (
@@ -242,7 +242,7 @@ const PersonalizedTraining = () => {
                     <button
                         onClick={() => {
                             setActiveTab("ask");
-                            setSelectedHistoryItem(null); // Reset selected history item
+                            setSelectedHistoryItem(null); 
                         }}
                         className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
                             activeTab === "ask" 
@@ -256,7 +256,7 @@ const PersonalizedTraining = () => {
                     <button
                         onClick={() => {
                             setActiveTab("history");
-                            setSelectedHistoryItem(null); // Reset selected history item
+                            setSelectedHistoryItem(null); 
                         }}
                         className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
                             activeTab === "history" 
@@ -270,7 +270,7 @@ const PersonalizedTraining = () => {
                     <button
                         onClick={() => {
                             setActiveTab("saved");
-                            setSelectedHistoryItem(null); // Reset selected history item
+                            setSelectedHistoryItem(null); 
                         }}
                         className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
                             activeTab === "saved" 

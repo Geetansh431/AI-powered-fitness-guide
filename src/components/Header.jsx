@@ -7,21 +7,21 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { title: 'Programs', to: '/programs', icon: Dumbbell },
+    { title: 'Personal Assistant', to: '/programs', icon: Dumbbell },
     { title: 'Challenges', to: '/challenges', icon: Trophy },
     { title: 'Progress', to: '/progress', icon: BarChart },
   ];
 
   return (
     <>
-      {/* Add a spacer div that matches header height */}
+     
       <div className="h-20 w-full"></div>
       
       <header className="fixed w-full top-0 z-50 bg-gradient-to-r from-zinc-950/95 to-zinc-900/95 backdrop-blur-xl border-b border-zinc-800/50">
         <nav className="max-w-7xl mx-auto px-6 h-20">
-          {/* Rest of the header content remains the same */}
+          
           <div className="flex items-center justify-between h-full">
-            {/* Logo */}
+          
             <Link to="/">
               <motion.div 
                 className="flex items-center gap-3"
@@ -40,7 +40,7 @@ const Header = () => {
               </motion.div>
             </Link>
 
-            {/* Desktop Navigation */}
+          
             <div className="hidden md:flex items-center gap-10">
               {navItems.map((item, index) => (
                 <motion.div
@@ -66,7 +66,6 @@ const Header = () => {
               ))}
             </div>
 
-            {/* Auth Buttons */}
             <div className="hidden md:flex items-center gap-6">
               <Link to="/login">
                 <motion.button
@@ -88,7 +87,7 @@ const Header = () => {
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
+           
             <motion.button
               className="p-3 md:hidden text-gray-300 hover:text-white bg-zinc-800/50 rounded-lg"
               whileHover={{ scale: 1.05 }}
@@ -99,7 +98,7 @@ const Header = () => {
             </motion.button>
           </div>
 
-          {/* Mobile Menu */}
+         
           <AnimatePresence>
             {isMobileMenuOpen && (
               <motion.div

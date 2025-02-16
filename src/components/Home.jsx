@@ -13,6 +13,15 @@ import {
   Users,
   Timer,
   Star,
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
+  Mail,
+  Check,
+  Heart,
+  Zap,
+  ArrowRight,
 } from 'lucide-react';
 
 const Home = () => {
@@ -72,19 +81,44 @@ const Home = () => {
     { id: 'yoga', name: 'Yoga' },
   ];
 
-  // Filter workouts based on the selected plan
+  const testimonials = [
+    {
+      name: "Sarah M.",
+      role: "Fitness Enthusiast",
+      image: "https://randomuser.me/api/portraits/women/1.jpg",
+      quote: "The AI trainer adapts perfectly to my schedule and energy levels. It's like having a personal trainer who knows exactly what I need each day.",
+      rating: 5
+    },
+    {
+      name: "James L.",
+      role: "Software Developer",
+      image: "https://randomuser.me/api/portraits/men/2.jpg",
+      quote: "As someone with a busy schedule, having an AI trainer available 24/7 has been game-changing. The personalized workouts are incredibly effective.",
+      rating: 5
+    },
+    {
+      name: "Maria R.",
+      role: "Professional Athlete",
+      image: "https://randomuser.me/api/portraits/women/3.jpg",
+      quote: "The detailed analytics and progress tracking have helped me optimize my training like never before. This is the future of fitness.",
+      rating: 5
+    }
+  ];
+
+
+  
   const filteredWorkouts = selectedPlan === 'all'
     ? featuredWorkouts
     : featuredWorkouts.filter(workout => workout.category === selectedPlan);
 
-  // Function to handle workout button click
+  
   const handleStartWorkout = (route) => {
-    navigate(route); // Navigate to the corresponding workout page
+    navigate(route); 
   };
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      {/* Hero Section */}
+      
       <motion.div
         className="relative min-h-[80vh] flex items-center justify-center overflow-hidden"
         initial={{ opacity: 0 }}
@@ -161,7 +195,6 @@ const Home = () => {
         </div>
       </motion.div>
 
-      {/* Featured Workouts Section */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-12">
@@ -241,6 +274,99 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      
+      <section className="py-20 px-4 bg-zinc-900/50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-12">What Our Users Say</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                className="bg-zinc-900/50 rounded-2xl p-6 border border-gray-800"
+                whileHover={{ scale: 1.02 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <div className="flex items-start gap-4 mb-4">
+                  <img
+                    src={testimonial.image}
+                    alt={testimonial.name}
+                    className="w-16 h-16 rounded-full"
+                  />
+                  <div>
+                    <h3 className="font-semibold">{testimonial.name}</h3>
+                    <p className="text-gray-400">{testimonial.role}</p>
+                  </div>
+                </div>
+                <p className="text-gray-300 mb-4">{testimonial.quote}</p>
+                <div className="flex gap-1">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-yellow-500 text-yellow-500" />
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+     
+      <footer className="bg-zinc-900/50 border-t border-zinc-800 py-12 px-4">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+          
+          <div>
+            <h3 className="text-xl font-bold mb-4">About Us</h3>
+            <p className="text-gray-400">
+              We are dedicated to transforming your fitness journey with AI-powered tools and personalized workouts.
+            </p>
+          </div>
+
+          
+          <div>
+            <h3 className="text-xl font-bold mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li><a href="/" className="text-gray-400 hover:text-white">Home</a></li>
+              <li><a href="/programs" className="text-gray-400 hover:text-white">Programs</a></li>
+              <li><a href="/contact" className="text-gray-400 hover:text-white">Contact</a></li>
+              <li><a href="/privacy" className="text-gray-400 hover:text-white">Privacy Policy</a></li>
+            </ul>
+          </div>
+
+         
+          <div>
+            <h3 className="text-xl font-bold mb-4">Contact Us</h3>
+            <ul className="space-y-2">
+              <li className="text-gray-400">Email: Geetansh@fitnessai.com</li>
+              <li className="text-gray-400">Phone: +91 8847222304</li>
+              <li className="text-gray-400">Address: Rajpura Punjab</li>
+            </ul>
+          </div>
+
+        
+          <div>
+            <h3 className="text-xl font-bold mb-4">Follow Us</h3>
+            <div className="flex gap-4">
+              <a href="https://facebook.com" className="text-gray-400 hover:text-white">
+                <Facebook className="w-6 h-6" />
+              </a>
+              <a href="https://twitter.com" className="text-gray-400 hover:text-white">
+                <Twitter className="w-6 h-6" />
+              </a>
+              <a href="https://instagram.com" className="text-gray-400 hover:text-white">
+                <Instagram className="w-6 h-6" />
+              </a>
+              <a href="https://linkedin.com" className="text-gray-400 hover:text-white">
+                <Linkedin className="w-6 h-6" />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center mt-8 text-gray-400">
+          © {new Date().getFullYear()} Fitness AI. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 };

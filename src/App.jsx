@@ -10,6 +10,7 @@ import YogaWorkout from './components/YogaWorkout';
 import StrengthWorkout from './components/StrengthWorkout';
 import Programs from './components/Programs';
 import PersonalizedTraining from './components/PersonalizedTraining';
+import Contact from './components/Contact';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/workout/strength" element={<StrengthWorkout />} />
         <Route path='/programs' element={<Programs />} />
         <Route path='/personalizedTraining' element={<PersonalizedTraining />} />
+        <Route path='/contact' element={<Contact />} />
       </Routes>
     </Router>
   );

@@ -6,22 +6,22 @@ import { useNavigate } from 'react-router-dom';
 const Exercise = () => {
     const [time, setTime] = useState(0);
     const webcamRef = useRef(null);
-    // const { id } = useParams();
+
     const navigate = useNavigate();
-    //timer
+   
     useEffect(() => {
         const timer = setInterval(() => {
             setTime((prevTime) => prevTime + 1);
         }, 1000);
         return () => clearInterval(timer);
     }, []);
-    //timer formate
+   
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
-    //pushing after ending
+   
     const handleEnd = () =>{
         localStorage.setItem('exerciseTime', time);
         alert(`Exercise session ended. Total time: ${formatTime(time)}`);

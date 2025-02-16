@@ -1,177 +1,466 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom'; // For navigation
-import { Play, ChevronRight, Dumbbell, Flame, Trophy, Users, Timer, Star } from 'lucide-react'; // Icons
+import { useNavigate } from 'react-router-dom';
+import { 
+  Play, ChevronRight, Bot, Sparkles, Brain, Trophy, 
+  Users, Timer, Star, LineChart, ShieldCheck, 
+  Activity, Zap, Target, CheckCircle, Clock,
+  ArrowRight, MessageSquare, BarChart, Heart
+} from 'lucide-react';
+import man from "../assets/man.jpg"
+import women from "../assets/women.jpg"
 
 const Programs = () => {
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('beginners');
 
-  // Function to handle navigation to personalized training
   const handlePersonalizedTraining = () => {
-    navigate('/personalizedTraining'); // Redirect to the personalized training route
+    navigate('/personalizedTraining');
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1
+    }
   };
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      {/* Hero Section */}
+     
       <motion.div
-        className="relative min-h-[60vh] flex items-center justify-center overflow-hidden"
+        className="relative min-h-[80vh] flex items-center justify-center overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 animate-gradient" />
+        <div className="absolute inset-0 bg-black/50" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
-          <motion.h1
-            className="text-6xl md:text-7xl font-bold"
-            initial={{ opacity: 0, y: -50 }}
+          <motion.div
+            initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            className="mb-6 flex items-center justify-center gap-2"
+          >
+            <Sparkles className="w-6 h-6 text-purple-400" />
+            <span className="text-purple-400 font-semibold">AI-Powered Fitness Revolution</span>
+          </motion.div>
+
+          <motion.h1
+            className="text-6xl md:text-8xl font-bold mb-8"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-              Explore Our Programs
+              Your Future Self
             </span>
+            <br />
+            <span className="text-white">Starts Today</span>
           </motion.h1>
 
           <motion.p
-            className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto mt-4"
+            className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
           >
-            Discover a wide range of fitness programs tailored to your goals. Whether you're looking to build strength, improve flexibility, or boost endurance, we've got you covered.
+            Experience the power of AI-driven personal training that adapts to your needs, 
+            tracks your progress, and guides you every step of the way.
           </motion.p>
 
-          <motion.button
-            className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-semibold flex items-center gap-2 overflow-hidden mx-auto"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handlePersonalizedTraining} // Redirect to personalized training
+          <motion.div
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
           >
-            <span className="relative z-10">Get AI Personal Training</span>
-            <Play className="w-5 h-5 relative z-10" />
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500"
-              initial={{ x: "100%" }}
-              whileHover={{ x: 0 }}
-              transition={{ duration: 0.3 }}
-            />
-          </motion.button>
+            <motion.button
+              className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-semibold flex items-center gap-2 overflow-hidden"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handlePersonalizedTraining}
+            >
+              <span className="relative z-10">Your Assistant</span>
+              <Play className="w-5 h-5 relative z-10" />
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500"
+                initial={{ x: "100%" }}
+                whileHover={{ x: 0 }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.button>
+          </motion.div>
+
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 max-w-4xl mx-auto"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+          </motion.div>
         </div>
       </motion.div>
 
-      {/* Programs Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12">Our Programs</h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Cardio Program */}
+      <section className="py-20 px-4 bg-gradient-to-b from-zinc-950 to-zinc-900">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">AI-Powered Features</h2>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              Our cutting-edge AI technology transforms your fitness journey with personalized 
+              guidance and real-time adaptations.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+          
             <motion.div
-              className="bg-zinc-900/50 rounded-2xl overflow-hidden border border-gray-800"
-              whileHover={{ scale: 1.02 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              className="bg-zinc-900/50 rounded-2xl overflow-hidden border border-gray-800 backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
             >
               <div className="p-6">
                 <div className="bg-gradient-to-r from-blue-500 to-purple-500 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
-                  <Flame className="w-6 h-6 text-white" />
+                  <Brain className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Cardio Blast</h3>
+                <h3 className="text-xl font-bold mb-2">Smart Workout Planning</h3>
                 <p className="text-gray-400 mb-4">
-                  High-intensity cardio workouts to boost your endurance and burn calories.
+                  Our AI analyzes your fitness level, goals, and preferences to create perfectly 
+                  tailored workout plans that evolve with you.
                 </p>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="flex items-center gap-2">
-                    <Timer className="w-5 h-5 text-blue-500" />
-                    <span>30-45 min</span>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <Bot className="w-4 h-4 text-blue-400" />
+                    <span>Dynamic exercise selection</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-500" />
-                    <span>4.8/5</span>
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <Timer className="w-4 h-4 text-blue-400" />
+                    <span>Optimal workout timing</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <Activity className="w-4 h-4 text-blue-400" />
+                    <span>Real-time intensity adjustment</span>
                   </div>
                 </div>
                 <button
-                  className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-semibold flex items-center justify-center gap-2"
-                  onClick={() => navigate('/programs/cardio')} // Example navigation
+                  className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-semibold flex items-center justify-center gap-2 group"
+                  onClick={handlePersonalizedTraining}
                 >
-                  Explore Program <ChevronRight className="w-5 h-5" />
+                  Explore Features 
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             </motion.div>
 
-            {/* Strength Program */}
             <motion.div
-              className="bg-zinc-900/50 rounded-2xl overflow-hidden border border-gray-800"
-              whileHover={{ scale: 1.02 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+              className="bg-zinc-900/50 rounded-2xl overflow-hidden border border-gray-800 backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
             >
               <div className="p-6">
                 <div className="bg-gradient-to-r from-purple-500 to-pink-500 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
-                  <Dumbbell className="w-6 h-6 text-white" />
+                  <BarChart className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Strength Training</h3>
+                <h3 className="text-xl font-bold mb-2">Advanced Analytics</h3>
                 <p className="text-gray-400 mb-4">
-                  Build muscle and increase strength with our expert-led strength training programs.
+                  Get detailed insights into your performance with AI-powered analytics that 
+                  track every aspect of your fitness journey.
                 </p>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="flex items-center gap-2">
-                    <Timer className="w-5 h-5 text-purple-500" />
-                    <span>45-60 min</span>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <LineChart className="w-4 h-4 text-purple-400" />
+                    <span>Progress visualization</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-500" />
-                    <span>4.7/5</span>
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <Target className="w-4 h-4 text-purple-400" />
+                    <span>Goal tracking & predictions</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <Heart className="w-4 h-4 text-purple-400" />
+                    <span>Health metrics monitoring</span>
                   </div>
                 </div>
                 <button
-                  className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold flex items-center justify-center gap-2"
-                  onClick={() => navigate('/programs/strength')} // Example navigation
+                  className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold flex items-center justify-center gap-2 group"
+                  onClick={handlePersonalizedTraining}
                 >
-                  Explore Program <ChevronRight className="w-5 h-5" />
+                  View Analytics 
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             </motion.div>
 
-            {/* Yoga Program */}
+         
             <motion.div
-              className="bg-zinc-900/50 rounded-2xl overflow-hidden border border-gray-800"
-              whileHover={{ scale: 1.02 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+              className="bg-zinc-900/50 rounded-2xl overflow-hidden border border-gray-800 backdrop-blur-sm"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
             >
               <div className="p-6">
-                <div className="bg-gradient-to-r from-green-500 to-emerald-500 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
-                  <Users className="w-6 h-6 text-white" />
+                <div className="bg-gradient-to-r from-indigo-500 to-violet-500 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                  <MessageSquare className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Yoga & Flexibility</h3>
+                <h3 className="text-xl font-bold mb-2">24/7 AI Coach</h3>
                 <p className="text-gray-400 mb-4">
-                  Improve flexibility, balance, and mindfulness with our yoga programs.
+                  Your personal AI coach is always available to provide guidance, answer 
+                  questions, and keep you motivated.
                 </p>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="flex items-center gap-2">
-                    <Timer className="w-5 h-5 text-green-500" />
-                    <span>30-60 min</span>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <CheckCircle className="w-4 h-4 text-indigo-400" />
+                    <span>Form correction & tips</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-500" />
-                    <span>4.9/5</span>
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <Zap className="w-4 h-4 text-indigo-400" />
+                    <span>Motivation & reminders</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <Clock className="w-4 h-4 text-indigo-400" />
+                    <span>24/7 instant responses</span>
                   </div>
                 </div>
                 <button
-                  className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl font-semibold flex items-center justify-center gap-2"
-                  onClick={() => navigate('/programs/yoga')} // Example navigation
+                  className="w-full py-3 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-xl font-semibold flex items-center justify-center gap-2 group"
+                  onClick={handlePersonalizedTraining}
                 >
-                  Explore Program <ChevronRight className="w-5 h-5" />
+                  Meet Your Coach 
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
+      </section>
+
+      
+      <section className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Success Stories</h2>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              See how our AI trainer has transformed the lives of users worldwide.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            className="grid md:grid-cols-3 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {[
+                {
+                  name: "Sarah M.",
+                  role: "Fitness Enthusiast",
+                  image: women,
+                  quote: "The AI trainer adapts perfectly to my schedule and energy levels. It's like having a personal trainer who knows exactly what I need each day.",
+                  rating: 5
+                },
+                {
+                  name: "James L.",
+                  role: "Software Developer",
+                  image: man,
+                  quote: "As someone with a busy schedule, having an AI trainer available 24/7 has been game-changing. The personalized workouts are incredibly effective.",
+                  rating: 5
+                },
+                {
+                  name: "Maria R.",
+                  role: "Professional Athlete",
+                  image: women,
+                  quote: "The detailed analytics and progress tracking have helped me optimize my training like never before. This is the future of fitness.",
+                  rating: 5
+                }
+              ].map((testimonial, index) => (
+                <motion.div
+                  key={testimonial.name}
+                  variants={itemVariants}
+                  className="bg-zinc-900/50 rounded-2xl p-6 border border-gray-800"
+                >
+                  <div className="flex items-start gap-4 mb-4">
+                    <img
+                      src={testimonial.image}
+                      alt={testimonial.name}
+                      className="w-16 h-16 rounded-full"
+                    />
+                    <div>
+                      <h3 className="font-semibold">{testimonial.name}</h3>
+                      <p className="text-gray-400">{testimonial.role}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-300 mb-4">{testimonial.quote}</p>
+                  <div className="flex gap-1">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-yellow-500 text-yellow-500" />
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="py-20 px-4 bg-gradient-to-b from-zinc-900 to-zinc-950">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Why Choose AI Training?</h2>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              See how our AI-powered solution compares to traditional training methods.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="grid md:grid-cols-3 gap-8 mb-12"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.div
+              variants={itemVariants}
+              className="rounded-2xl p-6 bg-zinc-900/50 border border-gray-800"
+            >
+              <h3 className="text-xl font-bold mb-4">Traditional Gym</h3>
+              <ul className="space-y-4">
+                <li className="flex items-center gap-2 text-gray-400">
+                  <Clock className="w-5 h-5 text-gray-500" />
+                  <span>Fixed schedules</span>
+                </li>
+                <li className="flex items-center gap-2 text-gray-400">
+                  <Users className="w-5 h-5 text-gray-500" />
+                  <span>Limited personal attention</span>
+                </li>
+                <li className="flex items-center gap-2 text-gray-400">
+                  <Target className="w-5 h-5 text-gray-500" />
+                  <span>Generic workout plans</span>
+                </li>
+              </ul>
+            </motion.div>
+
+            <motion.div
+              variants={itemVariants}
+              className="rounded-2xl p-6 bg-gradient-to-b from-purple-500/10 to-pink-500/10 border border-purple-500/20"
+            >
+              <h3 className="text-xl font-bold mb-4">AI Personal Trainer</h3>
+              <ul className="space-y-4">
+                <li className="flex items-center gap-2 text-gray-200">
+                  <Clock className="w-5 h-5 text-purple-400" />
+                  <span>Available 24/7</span>
+                </li>
+                <li className="flex items-center gap-2 text-gray-200">
+                  <Bot className="w-5 h-5 text-purple-400" />
+                  <span>Constant personalized attention</span>
+                </li>
+                <li className="flex items-center gap-2 text-gray-200">
+                  <Brain className="w-5 h-5 text-purple-400" />
+                  <span>Adaptive intelligent planning</span>
+                </li>
+              </ul>
+            </motion.div>
+
+            <motion.div
+              variants={itemVariants}
+              className="rounded-2xl p-6 bg-zinc-900/50 border border-gray-800"
+            >
+              <h3 className="text-xl font-bold mb-4">Personal Trainer</h3>
+              <ul className="space-y-4">
+                <li className="flex items-center gap-2 text-gray-400">
+                  <Clock className="w-5 h-5 text-gray-500" />
+                  <span>Limited availability</span>
+                </li>
+                <li className="flex items-center gap-2 text-gray-400">
+                  <Users className="w-5 h-5 text-gray-500" />
+                  <span>High cost per session</span>
+                </li>
+                <li className="flex items-center gap-2 text-gray-400">
+                  <Target className="w-5 h-5 text-gray-500" />
+                  <span>Manual progress tracking</span>
+                </li>
+              </ul>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="py-20 px-4">
+        <motion.div
+          className="max-w-4xl mx-auto text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Start Your AI Fitness Journey Today
+          </h2>
+          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+            Join thousands of users who have transformed their fitness journey with our 
+            AI personal trainer. Try it free for 14 days.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.button
+              className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-semibold flex items-center gap-2 overflow-hidden"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handlePersonalizedTraining}
+            >
+              <span className="relative z-10">Start Free Trial</span>
+              <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500"
+                initial={{ x: "100%" }}
+                whileHover={{ x: 0 }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.button>
+
+            <button
+              className="px-8 py-4 border border-gray-700 rounded-xl font-semibold flex items-center gap-2 hover:bg-white/5 transition-colors"
+              onClick={() => navigate('/contact')}
+            >
+              Contact Support <MessageSquare className="w-5 h-5" />
+            </button>
+          </div>
+        </motion.div>
       </section>
     </div>
   );
