@@ -8,6 +8,8 @@ import SignUp from './components/SignUp';
 import CardioWorkout from './components/CardioWorkout';
 import YogaWorkout from './components/YogaWorkout';
 import StrengthWorkout from './components/StrengthWorkout';
+import Programs from './components/Programs';
+import PersonalizedTraining from './components/PersonalizedTraining';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
         <Route path="/workout/cardio" element={<CardioWorkout />} />
         <Route path="/workout/yoga" element={<YogaWorkout />} />
         <Route path="/workout/strength" element={<StrengthWorkout />} />
+        <Route path='/programs' element={<Programs />} />
+        <Route path='/personalizedTraining' element={<PersonalizedTraining />} />
       </Routes>
     </Router>
   );
