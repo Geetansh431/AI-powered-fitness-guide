@@ -14,7 +14,8 @@ import {
     Trophy,
     Weight
 } from 'lucide-react';
-import axiosInstance from "../lib/Axios"
+import { useAuthStore } from '../Store/useAuthStore.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
@@ -33,35 +34,17 @@ const SignIn = () => {
         const randomIndex = Math.floor(Math.random() * motivationalPhrases.length);
         setMotivationalPhrase(motivationalPhrases[randomIndex]);
     }, []);
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
 
-        try {
-            const response = await fetch("http://localhost:5001/api/auth/login",{ 
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email, password })
-            });
-            const data = await response.json();
-            if(response.ok){
-                localStorage.setItem("token", data.token);
-                toast.success("Login successful! Redirecting...", { position: "top-center" });
-                setTimeout(() => {
-                    window.location.href = "/profile";
-                }, 2000);
-            } 
-            else{
-                toast.error(data.message || "Invalid credentials. Try again!", { position: "top-center" });
-            }
-        } 
-        catch (error) {
-            toast.error("Something went wrong. Please try again!", { position: "top-center" });
-        }
+    const { login } = useAuthStore();
+    const navigate = useNavigate();   
+
+    const handleSubmit = async (e) => {
+        setIsLoading(true);
+        e.preventDefault();
+        login({email ,  password} , navigate);
         setIsLoading(false);
     };
+
 
     const pulseVariants = {
         initial: { scale: 1, opacity: 0.5 },

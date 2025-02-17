@@ -12,6 +12,7 @@ import Progress from './components/Progress';
 import WorkoutsPage from './components/WorkoutsPage';
 import Profile from './components/Profilepage'
 
+
 function App() {
   return (
     <Router>
