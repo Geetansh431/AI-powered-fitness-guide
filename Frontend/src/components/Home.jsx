@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import Cardio from "../assets/Cardio.webp";
 import Yoga from "../assets/Yoga.webp";
 import Strength from "../assets/Streng.webp";
+// Import workout components
+// import YogaWorkout from '../components/YogaWorkout';
+// import StrengthWorkout from '../components/StrengthWorkout';
+import WorkoutComponent from '../components/WorkoutComponent';
 import {
   Dumbbell,
   Flame,
@@ -17,16 +21,68 @@ import {
   Twitter,
   Instagram,
   Linkedin,
-  Mail,
-  Check,
-  Heart,
-  Zap,
-  ArrowRight,
 } from 'lucide-react';
 
+// Workout data array
+const workoutsData = [
+  {
+    id: 'strength',
+    name: 'Strength Foundation',
+    type: 'Strength',
+    description: 'Transform your fitness with this powerful strength-training workout designed to build muscle and enhance endurance.',
+    videoId: 'sinkIlViPG8',
+    calories: '350 cal',
+    duration: '45 Min',
+    intensity: 'High',
+    trainer: {
+      name: 'Heather Robertson',
+      specialty: 'Strength Specialist',
+      experience: '4+ years experience',
+    },
+  },
+  {
+    id: 'yoga',
+    name: 'Yoga Foundation',
+    type: 'Yoga',
+    description: 'Transform your fitness with this powerful Yoga workout designed to build muscle and enhance endurance.',
+    videoId: 'uqJ-jANozcE',
+    calories: '250 cal',
+    duration: '45 Min',
+    intensity: 'High',
+    trainer: {
+      name: 'Move With Nicole',
+      specialty: 'Yoga Specialist',
+      experience: '8+ years experience',
+    },
+  },
+  {
+    id: 'cardio',
+    name: 'HIIT Cardio Blast',
+    type: 'HIIT',
+    description: 'Transform your fitness with this high-intensity workout designed to maximize calorie burn and improve endurance.',
+    videoId: 'kZDvg92tTMc',
+    calories: '400 cal',
+    duration: '30 min',
+    intensity: 'High',
+    trainer: {
+      name: 'Caroline Girvan',
+      specialty: 'HIIT Specialist',
+      experience: '8+ years experience',
+    },
+  },
+];
+
+// Map to component references
+// const workoutComponents = {
+//   yoga: YogaWorkout,
+//   strength: StrengthWorkout,
+//   cardio: CardioWorkout
+// };
+
 const Home = () => {
-  const [selectedPlan, setSelectedPlan] = useState('all'); // State to track the selected plan
-  const navigate = useNavigate(); // Hook for navigation
+  const [selectedPlan, setSelectedPlan] = useState('all');
+  const [selectedWorkout, setSelectedWorkout] = useState(null);
+  const navigate = useNavigate();
 
   const stats = [
     { value: '10K+', label: 'Active Users', icon: Users, color: 'from-blue-500 to-indigo-500' },
@@ -35,42 +91,43 @@ const Home = () => {
     { value: '45min', label: 'Avg. Session', icon: Timer, color: 'from-orange-500 to-red-500' },
   ];
 
+  // Create featured workouts array from workoutsData
   const featuredWorkouts = [
     {
       id: 1,
-      title: "HIIT Cardio Blast",
-      duration: "30 min",
-      calories: "400",
-      difficulty: "Intermediate",
+      title: workoutsData.find(w => w.id === 'cardio').name,
+      duration: workoutsData.find(w => w.id === 'cardio').duration,
+      calories: workoutsData.find(w => w.id === 'cardio').calories,
+      difficulty: workoutsData.find(w => w.id === 'cardio').intensity,
       rating: 4.8,
       image: Cardio,
-      trainer: "Caroline Girvan",
+      trainer: workoutsData.find(w => w.id === 'cardio').trainer.name,
       category: "cardio",
-      route: "/workout/cardio" // Add a route for each workout
+      workoutId: 'cardio'
     },
     {
       id: 2,
-      title: "Power Yoga Flow",
-      duration: "45 min",
-      calories: "250",
-      difficulty: "All Levels",
+      title: workoutsData.find(w => w.id === 'yoga').name,
+      duration: workoutsData.find(w => w.id === 'yoga').duration,
+      calories: workoutsData.find(w => w.id === 'yoga').calories,
+      difficulty: workoutsData.find(w => w.id === 'yoga').intensity,
       rating: 4.9,
       image: Yoga,
-      trainer: "Move With Nicole",
+      trainer: workoutsData.find(w => w.id === 'yoga').trainer.name,
       category: "yoga",
-      route: "/workout/yoga" // Add a route for each workout
+      workoutId: 'yoga'
     },
     {
       id: 3,
-      title: "Strength Foundation",
-      duration: "50 min",
-      calories: "350",
-      difficulty: "Beginner",
+      title: workoutsData.find(w => w.id === 'strength').name,
+      duration: workoutsData.find(w => w.id === 'strength').duration,
+      calories: workoutsData.find(w => w.id === 'strength').calories,
+      difficulty: workoutsData.find(w => w.id === 'strength').intensity,
       rating: 4.7,
       image: Strength,
-      trainer: "Heather Robertson",
+      trainer: workoutsData.find(w => w.id === 'strength').trainer.name,
       category: "strength",
-      route: "/workout/strength" // Add a route for each workout
+      workoutId: 'strength'
     }
   ];
 
@@ -105,20 +162,25 @@ const Home = () => {
     }
   ];
 
-
-  
   const filteredWorkouts = selectedPlan === 'all'
     ? featuredWorkouts
     : featuredWorkouts.filter(workout => workout.category === selectedPlan);
 
-  
-  const handleStartWorkout = (route) => {
-    navigate(route); 
+  // Updated to find workout data by ID and set it as selected workout
+  const handleStartWorkout = (workoutId) => {
+    const workoutData = workoutsData.find(workout => workout.id === workoutId);
+    setSelectedWorkout(workoutData);
   };
+
+  // Render selected workout component with props if workout is selected
+  if (selectedWorkout) {
+    // const WorkoutComponent = workoutComponents[selectedWorkout.id];
+    return <WorkoutComponent workoutData={selectedWorkout} />;
+  }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      
+
       <motion.div
         className="relative min-h-[80vh] flex items-center justify-center overflow-hidden"
         initial={{ opacity: 0 }}
@@ -204,8 +266,8 @@ const Home = () => {
                 <motion.button
                   key={plan.id}
                   className={`px-6 py-2 rounded-xl text-sm font-medium transition-colors ${selectedPlan === plan.id
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-                      : 'bg-zinc-900 text-gray-400 hover:text-white'
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                    : 'bg-zinc-900 text-gray-400 hover:text-white'
                     }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -255,7 +317,7 @@ const Home = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Flame className="w-5 h-5 text-orange-500" />
-                      <span>{workout.calories} cal</span>
+                      <span>{workout.calories}</span>
                     </div>
                   </div>
 
@@ -263,7 +325,7 @@ const Home = () => {
                     className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-semibold flex items-center justify-center gap-2"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => handleStartWorkout(workout.route)} // Pass the workout route
+                    onClick={() => handleStartWorkout(workout.workoutId)} // Pass the workout ID
                   >
                     Start Workout
                     <Play className="w-5 h-5" />
@@ -275,7 +337,7 @@ const Home = () => {
         </div>
       </section>
 
-      
+
       <section className="py-20 px-4 bg-zinc-900/50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-12">What Our Users Say</h2>
@@ -311,10 +373,10 @@ const Home = () => {
         </div>
       </section>
 
-     
+
       <footer className="bg-zinc-900/50 border-t border-zinc-800 py-12 px-4">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-          
+
           <div>
             <h3 className="text-xl font-bold mb-4">About Us</h3>
             <p className="text-gray-400">
@@ -322,7 +384,7 @@ const Home = () => {
             </p>
           </div>
 
-          
+
           <div>
             <h3 className="text-xl font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
@@ -333,7 +395,7 @@ const Home = () => {
             </ul>
           </div>
 
-         
+
           <div>
             <h3 className="text-xl font-bold mb-4">Contact Us</h3>
             <ul className="space-y-2">
@@ -343,7 +405,7 @@ const Home = () => {
             </ul>
           </div>
 
-        
+
           <div>
             <h3 className="text-xl font-bold mb-4">Follow Us</h3>
             <div className="flex gap-4">

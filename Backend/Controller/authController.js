@@ -94,25 +94,73 @@ export const logoutController = async (req, res) => {
 
 export const updateProfileController = async (req, res) => {
   try {
-    const { profilePic } = req.body;
     const userId = req.user._id;
+    const {
+      fullName,
+      age,
+      gender,
+      height,
+      weight,
+      fitnessGoals,
+      dailyCaloricIntake,
+      personalBest,
+      totalReps
+    } = req.body;
 
-    if (!profilePic) {
-      return res.status(400).json({ message: "No profile pic provided" });
+    // Create an object to store fields that need to be updated
+    const updates = {};
+
+    // Only add fields that are actually provided in the request
+    if (fullName) updates.fullName = fullName;
+    if (age) updates.age = age;
+    if (gender) updates.gender = gender;
+    if (height) updates.height = height;
+    if (weight) updates.weight = weight;
+    if (fitnessGoals) updates.fitnessGoals = fitnessGoals;
+    if (dailyCaloricIntake) updates.dailyCaloricIntake = dailyCaloricIntake;
+
+    // Handle nested objects for personalBest
+    if (personalBest) {
+      // Check each nested field separately
+      if (!updates.personalBest) updates.personalBest = {};
+      if (personalBest.squat !== undefined) updates.personalBest.squat = personalBest.squat;
+      if (personalBest.pushups !== undefined) updates.personalBest.pushups = personalBest.pushups;
+      if (personalBest.lunges !== undefined) updates.personalBest.lunges = personalBest.lunges;
     }
 
-    const uploadedImage = await cloudinary.uploader.upload(profilePic);
+    // Handle nested objects for totalReps
+    if (totalReps) {
+      // Check each nested field separately
+      if (!updates.totalReps) updates.totalReps = {};
+      if (totalReps.squat !== undefined) updates.totalReps.squat = totalReps.squat;
+      if (totalReps.pushups !== undefined) updates.totalReps.pushups = totalReps.pushups;
+      if (totalReps.lunges !== undefined) updates.totalReps.lunges = totalReps.lunges;
+    }
 
+    // If no updates were provided
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ message: "No updates provided" });
+    }
+
+    // Update user with provided fields
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { profilePic: uploadedImage.secure_url },
-      { new: true }
+      updates,
+      { new: true, runValidators: true }
     );
 
-    return res.status(200).json(updatedUser);
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user: updatedUser
+    });
   } catch (error) {
-    console.log("Profile Picture Error : ", error.message);
-    return res.status(500).json({ message: "Internal server Error" });
+    console.log("Profile Update Error: ", error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 

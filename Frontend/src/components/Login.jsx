@@ -38,14 +38,27 @@ const SignIn = () => {
         return () => clearInterval(interval);
     }, []);
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        console.log('Email:', email);
-        console.log('Password:', password);
-        setIsLoading(false);
+    
+        try {
+            const response = await axiosInstance.post("/auth/login", {
+                email,
+                password,
+            });
+    
+            console.log("Login Success:", response.data);
+            // Handle success (e.g., store token, redirect user)
+        } catch (error) {
+            console.error("Login Failed:", error.response?.data || error.message);
+        } finally {
+            setIsLoading(false);
+        }
     };
+    
+
 
     const pulseVariants = {
         initial: { scale: 1, opacity: 0.5 },
