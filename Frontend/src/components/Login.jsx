@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-hot-toast';
 import {
     Mail,
     Dumbbell,
@@ -35,13 +34,13 @@ const SignIn = () => {
         setMotivationalPhrase(motivationalPhrases[randomIndex]);
     }, []);
 
-    const { login } = useAuthStore();
+    const { login} = useAuthStore();
     const navigate = useNavigate();   
 
     const handleSubmit = async (e) => {
         setIsLoading(true);
         e.preventDefault();
-        login({email ,  password} , navigate);
+        await login({email ,  password} , navigate);
         setIsLoading(false);
     };
 

@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../Models/user.model.js"
-import { genrateToken } from "../Lib/utils.js";
+import { generateToken } from "../Lib/utils.js";
 
 export const loginController = async (req, res) => {
   const { email, password } = req.body;
@@ -31,7 +31,7 @@ export const loginController = async (req, res) => {
       profilePic: user.profilePic,
     });
   } catch (error) {
-    console.log("Error in login controller", error.message);
+    console.log("Error in login controller ", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -168,7 +168,7 @@ export const updateProfileController = async (req, res) => {
 
 export const checkAuth = (req, res) => {
   try {
-    res.status(200).json(req.user);
+    return res.status(200).json(req.user);
   } catch (error) {
     console.log("Error in checkAuth controller : ", error.message);
     return res.status(500).json({ message: "Internal server Error" });

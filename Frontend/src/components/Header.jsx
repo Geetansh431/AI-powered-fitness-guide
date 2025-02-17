@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Dumbbell, Trophy, BarChart, BrainCircuit } from 'lucide-react';
@@ -14,7 +14,10 @@ const Header = () => {
     { title: 'Workouts', to: '/workouts', icon: Dumbbell },
   ];
 
-  const { authUser } = useAuthStore();
+  const { authUser, checkAuth } = useAuthStore();
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   return (
     <>
@@ -71,24 +74,37 @@ const Header = () => {
             </div>
 
             <div className="hidden md:flex items-center gap-6">
-              <Link to="/login">
-                <motion.button
-                  className="px-6 py-2.5 text-gray-300 hover:text-white font-medium rounded-lg hover:bg-zinc-800/50 transition-all duration-300"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  Sign In
-                </motion.button>
-              </Link>
-              <Link to="/signup">
-                <motion.button
-                  className="px-8 py-2.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg font-medium text-white shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30 transition-all duration-300"
-                  whileHover={{ scale: 1.03, boxShadow: "0 20px 25px -5px rgb(168 85 247 / 0.4)" }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  Get Started
-                </motion.button>
-              </Link>
+              {authUser ? (
+                <Link to="/profile">
+                  <motion.button className="px-6 py-2.5 text-gray-300 hover:text-white font-medium rounded-lg hover:bg-zinc-800/50 transition-all duration-300"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    Profile
+                  </motion.button>
+                </Link>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <motion.button
+                      className="px-6 py-2.5 text-gray-300 hover:text-white font-medium rounded-lg hover:bg-zinc-800/50 transition-all duration-300"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      Sign In
+                    </motion.button>
+                  </Link>
+                  <Link to="/signup">
+                    <motion.button
+                      className="px-8 py-2.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg font-medium text-white shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30 transition-all duration-300"
+                      whileHover={{ scale: 1.03, boxShadow: "0 20px 25px -5px rgb(168 85 247 / 0.4)" }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      Get Started
+                    </motion.button>
+                  </Link>
+                </>
+              )}
             </div>
 
 
@@ -133,8 +149,15 @@ const Header = () => {
                     </motion.div>
                   ))}
                   <div className="pt-6 border-t border-zinc-800/50 space-y-4">
-                    {!authUser ? (
-                      <></>   // profile div
+
+                    {authUser ? (
+                      <Link
+                        to="/profile"
+                        className="block text-gray-300 hover:text-white font-medium py-3 px-4 rounded-lg hover:bg-zinc-800/50 transition-all duration-300"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Profile
+                      </Link>
                     ) : (
                       <div className="flex gap-3">
                         <Link
@@ -153,7 +176,6 @@ const Header = () => {
                         </Link>
                       </div>
                     )}
-
 
                   </div>
                 </div>

@@ -17,7 +17,6 @@ import {
   Weight
 } from 'lucide-react';
 import { useAuthStore } from '../Store/useAuthStore.jsx';
-import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -36,7 +35,7 @@ const SignUp = () => {
   ];
 
   const { signup } = useAuthStore();
-  const validateForm = () => {
+  const validateForm = async() => {
     if (!username.trim()) return toast.error("Full Name required")
     if (!email.trim()) return toast.error("Email required")
     if (!/\S+@\S+|.|S+/.test(email)) return toast.error("Invalid Email");
@@ -50,13 +49,13 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setIsLoading(true);
-    const success = validateForm();
+    const success = await validateForm();
 
     if (success === true) {
-      signup({ fullName: username, email, password }, navigate);
+      await signup({ fullName: username, email, password }, navigate);
     }
     setIsLoading(false);
   }
