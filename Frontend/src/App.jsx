@@ -10,6 +10,7 @@ import PersonalizedTraining from './components/PersonalizedTraining';
 import Contact from './components/Contact';
 import Progress from './components/Progress';
 import WorkoutsPage from './components/WorkoutsPage';
+import Profile from './components/Profilepage'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path='/contact' element={<Contact />} />
         <Route path='/progress' element={<Progress />} />
         <Route path='/workouts' element={<WorkoutsPage />} />
+        <Route path='/profile' element={<Profile />} />
       </Routes>
     </Router>
   );

@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../Models/user.model.js"
+import { generateToken } from "../Lib/utils.js";
 
 export const loginController = async (req, res) => {
   const { email, password } = req.body;
@@ -21,7 +22,7 @@ export const loginController = async (req, res) => {
         message: "Invalid credentials",
       });
     }
-    genrateToken(user._id, res);
+    generateToken(user._id, res);
 
     return res.status(200).json({
       _id: user._id,
@@ -64,7 +65,7 @@ export const signupController = async (req, res) => {
     });
 
     if (newUser) {
-      genrateToken(newUser._id, res);
+      generateToken(newUser._id, res);
       await newUser.save();
 
       return res.status(201).json({

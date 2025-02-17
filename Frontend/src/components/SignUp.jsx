@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 import {
   Mail,
   Lock,
@@ -17,6 +19,7 @@ import {
 import axiosInstance from "../lib/Axios"
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -37,19 +40,23 @@ const SignUp = () => {
     setIsLoading(true);
 
     try {
-        const response = await axiosInstance.post("/auth/signup", {   fullName : username ,
-            email,
-            password,
-        });
-
+      const response = await axios.post("http://localhost:5001/api/auth/signup", {
+        fullName: username,
+        email,
+        password,
+      });
+      if(response.ok){
         console.log("Signup Success:", response.data);
-        // Handle success (e.g., store token, redirect user)
-    } catch (error) {
-        console.error("Login Failed:", error.response?.data || error.message);
-    } finally {
-        setIsLoading(false);
+        navigate("/login");
+      }
+    } 
+    catch (error) {
+      console.error("Signup Failed:", error.response?.data || error.message);
+    } 
+    finally {
+      setIsLoading(false);
     }
-};
+  };
 
   const pulseVariants = {
     initial: { scale: 1, opacity: 0.5 },
@@ -153,7 +160,8 @@ const SignUp = () => {
             style={{ opacity: 0.5 }}
           />
 
-          <div className="p-8 relative">
+          <div className="p-8 relative">import express from "express";
+
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
