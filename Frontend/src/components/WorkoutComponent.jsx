@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { Play, Timer, Flame, Heart, Users, Star, Zap, ChevronRight, Crown, Calendar, Award } from 'lucide-react';
+import { Play, Timer, Flame, Heart, Users, Star, Zap, ChevronRight, Crown, Calendar, Award, ArrowLeft } from 'lucide-react';
 
-// The component now accepts workoutData as a prop instead of workoutId
-const WorkoutComponent = ({ workoutData }) => {
+const WorkoutComponent = ({ workoutData, onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
-  // Return loading state if workout data is not available
   if (!workoutData) {
     return <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-black text-white flex items-center justify-center">No workout data provided</div>;
   }
@@ -14,6 +12,15 @@ const WorkoutComponent = ({ workoutData }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-black text-white p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
+        {/* Back Button */}
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors text-zinc-300 hover:text-white"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Back to Home
+        </button>
+
         <div className="relative">
           <div className="absolute -top-20 -right-20 w-96 h-96 bg-purple-500 rounded-full filter blur-[128px] opacity-20" />
           <div className="relative space-y-4">
@@ -41,11 +48,10 @@ const WorkoutComponent = ({ workoutData }) => {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2.5 rounded-lg font-medium capitalize transition-all duration-300 ${
-                activeTab === tab
+              className={`px-6 py-2.5 rounded-lg font-medium capitalize transition-all duration-300 ${activeTab === tab
                   ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
                   : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
-              }`}
+                }`}
             >
               {tab}
             </button>
@@ -128,9 +134,6 @@ const WorkoutComponent = ({ workoutData }) => {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-3">
-                      <span className="px-4 py-2 rounded-xl text-sm bg-zinc-800/50 backdrop-blur-sm flex items-center gap-2">
-                        <Star className="w-4 h-4 text-yellow-400" /> 4.8/5 Rating
-                      </span>
                       <span className="px-4 py-2 rounded-xl text-sm bg-zinc-800/50 backdrop-blur-sm flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-purple-400" /> 1000+ sessions
                       </span>

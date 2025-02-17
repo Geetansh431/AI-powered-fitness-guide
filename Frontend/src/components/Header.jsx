@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Dumbbell, Trophy, BarChart } from 'lucide-react';
+import { Menu, X, Dumbbell, Trophy, BarChart, BrainCircuit } from 'lucide-react';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { title: 'Personal Assistant', to: '/programs', icon: Dumbbell },
+    { title: 'Personal Assistant', to: '/programs', icon: BrainCircuit },
     { title: 'Challenges', to: '/challenges', icon: Trophy },
     { title: 'Progress', to: '/progress', icon: BarChart },
+    { title: 'Workouts', to: '/workouts', icon: Dumbbell },
   ];
 
   return (

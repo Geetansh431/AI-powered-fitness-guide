@@ -1,27 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { Play, Timer, Flame, Heart, Users, Star, Zap, ChevronRight, Crown, Calendar, Award, Facebook, Twitter, Instagram, Linkedin, Dumbbell, Trophy } from 'lucide-react';
 import Cardio from "../assets/Cardio.webp";
 import Yoga from "../assets/Yoga.webp";
 import Strength from "../assets/Streng.webp";
-// Import workout components
-// import YogaWorkout from '../components/YogaWorkout';
-// import StrengthWorkout from '../components/StrengthWorkout';
 import WorkoutComponent from '../components/WorkoutComponent';
-import {
-  Dumbbell,
-  Flame,
-  Trophy,
-  ChevronRight,
-  Play,
-  Users,
-  Timer,
-  Star,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-} from 'lucide-react';
 
 // Workout data array
 const workoutsData = [
@@ -72,17 +55,9 @@ const workoutsData = [
   },
 ];
 
-// Map to component references
-// const workoutComponents = {
-//   yoga: YogaWorkout,
-//   strength: StrengthWorkout,
-//   cardio: CardioWorkout
-// };
-
 const Home = () => {
   const [selectedPlan, setSelectedPlan] = useState('all');
   const [selectedWorkout, setSelectedWorkout] = useState(null);
-  const navigate = useNavigate();
 
   const stats = [
     { value: '10K+', label: 'Active Users', icon: Users, color: 'from-blue-500 to-indigo-500' },
@@ -91,7 +66,6 @@ const Home = () => {
     { value: '45min', label: 'Avg. Session', icon: Timer, color: 'from-orange-500 to-red-500' },
   ];
 
-  // Create featured workouts array from workoutsData
   const featuredWorkouts = [
     {
       id: 1,
@@ -166,18 +140,23 @@ const Home = () => {
     ? featuredWorkouts
     : featuredWorkouts.filter(workout => workout.category === selectedPlan);
 
-  // Updated to find workout data by ID and set it as selected workout
   const handleStartWorkout = (workoutId) => {
     const workoutData = workoutsData.find(workout => workout.id === workoutId);
     setSelectedWorkout(workoutData);
   };
 
-  // Render selected workout component with props if workout is selected
-  if (selectedWorkout) {
-    // const WorkoutComponent = workoutComponents[selectedWorkout.id];
-    return <WorkoutComponent workoutData={selectedWorkout} />;
-  }
+  const handleBackToHome = () => {
+    setSelectedWorkout(null);
+  };
 
+  if (selectedWorkout) {
+    return (
+      <WorkoutComponent
+        workoutData={selectedWorkout}
+        onBack={handleBackToHome}
+      />
+    );
+  }
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
 

@@ -14,6 +14,7 @@ import {
     Trophy,
     Weight
 } from 'lucide-react';
+import axiosInstance from "../lib/Axios"
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
