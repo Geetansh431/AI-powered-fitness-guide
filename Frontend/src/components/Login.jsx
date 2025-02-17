@@ -152,8 +152,7 @@ const SignIn = () => {
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="text-center mb-8"
-                        >
+                            className="text-center mb-8">
                             <motion.div
                                 className="flex justify-center mb-4"
                                 animate={{

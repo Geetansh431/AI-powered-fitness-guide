@@ -1,171 +1,183 @@
-import { useState, useEffect } from "react";
-import useSWR from "swr";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";  // Import js-cookie to handle cookies
-import { useAuthStore } from "../Store/useAuthStore";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiUser, FiEdit, FiSave, FiX, FiActivity, FiAward, FiTarget, FiChevronRight } from "react-icons/fi";
 
-const fetcher = async (url) => {
-    const token = Cookies.get("jwt");  // Get the token from cookies
-    if (!token) throw new Error("Unauthorized");
-    const res = await axios.get(url, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    return res.data;
+const statIcons = {
+    squat: <FiActivity className="w-6 h-6 text-purple-400" />,
+    pushups: <FiTarget className="w-6 h-6 text-blue-400" />,
+    lunges: <FiAward className="w-6 h-6 text-green-400" />,
+};
+
+// Static User Data
+const initialUser = {
+    fullName: "Shwetank Dohroo",
+    age: 20,
+    height: 180,
+    weight: 60,
+    gender: "Male",
+    fitnessGoals: "Build Muscle",
+    subscriptionPlan: "Premium",
+    totalReps: { squat: 100, pushups: 50, lunges: 200 },
+    personalBest: { squat: 120, pushups: 60, lunges: 250 },
 };
 
 export default function Profile() {
-    const navigate = useNavigate();
-    const { authUser  , updateProfile} = useAuthStore((state) => state);  // Get authUser from Zustand store
-    const { data: user, mutate, error } = useSWR("/api/user", fetcher);
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        formState: { errors },
-    } = useForm();
-
-    const [loading, setLoading] = useState(false);
+    const { register, handleSubmit, reset } = useForm({ defaultValues: initialUser });
+    const [user, setUser] = useState(initialUser);
     const [isEditing, setIsEditing] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const fillForm = (userData) => {
-        Object.keys(userData).forEach((key) => {
-            if (key !== "totalReps" && key !== "personalBest") {
-                setValue(key, userData[key]);
-            }
-        });
-    };
-
-    useEffect(() => {
-        if (!authUser) {
-            navigate("/login");  
-            return;
-        }
-        if (error) {
-            console.error("Error fetching profile:", error);
-            navigate("/login");
-        }
-        if (user) {
-            fillForm(user);
-        }
-    }, [user, error, navigate, authUser]);
-
-    const onSubmit = async (formData) => {
+    const onSubmit = (formData) => {
         setLoading(true);
-        try {
-            updateProfile(formData)
-            mutate();
+        setTimeout(() => {
+            setUser(formData);
             setIsEditing(false);
-        } catch (err) {
-            console.error("Update failed", err);
-        }
-        setLoading(false);
+            setLoading(false);
+        }, 1000);
     };
-
     const handleCancel = () => {
-        if (user) fillForm(user);
+        reset(user);
         setIsEditing(false);
     };
 
-    if (!user) {
-        return (
-            <div className="min-h-screen bg-gradient-to-b from-gray-900 to-purple-900 flex items-center justify-center">
-                <p className="text-white">Loading...</p>
-            </div>
-        );
-    }
-
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-900 to-purple-900 text-white p-6">
-            <div className="max-w-3xl mx-auto bg-white/10 p-6 rounded-xl shadow-xl">
-                <h2 className="text-3xl font-bold text-center mb-6">Profile</h2>
-                {!isEditing ? (
-                    <div className="flex justify-center mb-6">
-                        <button onClick={() => setIsEditing(true)} className="bg-purple-600 hover:bg-purple-700 transition-colors px-6 py-3 rounded-md font-semibold">
-                            Change
-                        </button>
-                    </div>
-                ) : null}
-                <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex flex-col">
-                        <label className="mb-1 font-semibold" htmlFor="fullName">Full Name</label>
-                        <input id="fullName" {...register("fullName", { required: true })} placeholder="John Doe" className="rounded-md p-2 text-black" disabled={!isEditing} />
-                        {errors.fullName && (
-                            <span className="text-red-400 text-sm mt-1">Full name is required.</span>
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 text-gray-100 p-6">
+            <motion.div initial={{ opacity: 0, y: 40, rotate: -3 }} animate={{ opacity: 1, y: 0, rotate: 0 }} transition={{ type: "spring", stiffness: 120, damping: 20 }} className="max-w-6xl mx-auto bg-gray-800/90 backdrop-blur-xl rounded-[2rem] shadow-2xl overflow-hidden">
+                <div className="p-8 bg-gradient-to-r from-purple-900/50 to-blue-900/50">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-5">
+                            <div className="p-3 bg-white/5 rounded-2xl">
+                                <FiUser className="w-10 h-10 text-purple-400" />
+                            </div>
+                            <div>
+                                <motion.h2 initial={{ y: 10 }} animate={{ y: 0 }} className="text-3xl font-bold bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">
+                                    {user.fullName}
+                                </motion.h2>
+                                <p className="text-gray-400 mt-1">
+                                    <span className="bg-purple-500/20 px-2 py-1 rounded-md text-sm">
+                                        {user.fitnessGoals}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        {!isEditing && (
+                            <motion.button onClick={() => setIsEditing(true)} className="flex items-center space-x-3 bg-white/5 px-6 py-3 rounded-xl border border-white/10 hover:border-white/20">
+                                <FiEdit className="w-5 h-5 text-purple-300" />
+                                <span className="font-medium">Edit Profile</span>
+                                <FiChevronRight className="w-4 h-4 opacity-70" />
+                            </motion.button>
                         )}
                     </div>
-                    <div className="flex flex-col">
-                        <label className="mb-1 font-semibold" htmlFor="age">Age</label>
-                        <input id="age" {...register("age", { min: 13, max: 120 })} type="number" placeholder="25" className="rounded-md p-2 text-black" disabled={!isEditing} />
+                </div>
+
+                {/* Profile Content */}
+                <div className="p-8 space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                        {[
+                            { label: "Age", value: user.age, unit: "years" },
+                            { label: "Height", value: user.height, unit: "cm" },
+                            { label: "Weight", value: user.weight, unit: "kg" },
+                            { label: "Subscription", value: user.subscriptionPlan, badge: true },
+                        ].map((stat, idx) => (
+                            <motion.div key={idx} className="bg-gray-700/30 p-5 rounded-2xl border border-white/5">
+                                <p className="text-sm text-gray-400">{stat.label}</p>
+                                <div className="flex items-baseline space-x-2">
+                                    <span className="text-2xl font-bold">{stat.value}</span>
+                                    {stat.unit && <span className="text-sm text-gray-400">{stat.unit}</span>}
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
-                    <div className="flex flex-col">
-                        <label className="mb-1 font-semibold" htmlFor="gender">Gender</label>
-                        <select id="gender" {...register("gender")} className="rounded-md p-2 text-black" disabled={!isEditing}>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div className="flex flex-col">
-                        <label className="mb-1 font-semibold" htmlFor="height">Height (cm)</label>
-                        <input id="height" {...register("height", { min: 100, max: 250 })} type="number" placeholder="170" className="rounded-md p-2 text-black" disabled={!isEditing} />
-                    </div>
-                    <div className="flex flex-col">
-                        <label className="mb-1 font-semibold" htmlFor="weight">Weight (kg)</label>
-                        <input id="weight" {...register("weight", { min: 30, max: 300 })} type="number" placeholder="70" className="rounded-md p-2 text-black" disabled={!isEditing} />
-                    </div>
-                    <div className="flex flex-col">
-                        <label className="mb-1 font-semibold" htmlFor="fitnessGoals">Fitness Goals</label>
-                        <select id="fitnessGoals" {...register("fitnessGoals")} className="rounded-md p-2 text-black" disabled={!isEditing}>
-                            <option value="Lose Weight">Lose Weight</option>
-                            <option value="Build Muscle">Build Muscle</option>
-                            <option value="Maintain Fitness">Maintain Fitness</option>
-                            <option value="Increase Endurance">Increase Endurance</option>
-                        </select>
-                    </div>
-                    <div className="flex flex-col">
-                        <label className="mb-1 font-semibold" htmlFor="subscriptionPlan">Subscription Plan</label>
-                        <select id="subscriptionPlan" {...register("subscriptionPlan")} className="rounded-md p-2 text-black" disabled={!isEditing}>
-                            <option value="Free">Free</option>
-                            <option value="Premium">Premium</option>
-                        </select>
-                    </div>
-                    {isEditing && (
-                        <div className="md:col-span-2 flex justify-center gap-4 mt-2">
-                            <button type="submit" disabled={loading} className="bg-purple-600 hover:bg-purple-700 transition-colors px-6 py-3 rounded-md font-semibold">
-                                {loading ? "Saving..." : "Save Changes"}
-                            </button>
-                            <button type="button" onClick={handleCancel} className="bg-gray-500 hover:bg-gray-600 transition-colors px-6 py-3 rounded-md font-semibold">
-                                Cancel
-                            </button>
+
+                    {/* Editable Fields */}
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {[
+                                { id: "fullName", label: "Full Name", type: "text" },
+                                { id: "gender", label: "Gender", type: "select", options: ["Male", "Female", "Other"] },
+                                {
+                                    id: "fitnessGoals",
+                                    label: "Fitness Goals",
+                                    type: "select",
+                                    options: ["Lose Weight", "Build Muscle", "Maintain Fitness", "Increase Endurance"],
+                                },
+                            ].map((field) => (
+                                <div key={field.id} className="space-y-3">
+                                    <label className="text-sm font-medium text-gray-400">{field.label}</label>
+                                    {isEditing ? (
+                                        field.type === "select" ? (
+                                            <select
+                                                {...register(field.id)}
+                                                className="w-full bg-gray-700 border rounded-xl px-4 py-3"
+                                            >
+                                                {field.options.map((option) => (
+                                                    <option key={option} value={option}>
+                                                        {option}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        ) : (
+                                            <input
+                                                {...register(field.id)}
+                                                type={field.type}
+                                                className="w-full bg-gray-700 border rounded-xl px-4 py-3"
+                                            />
+                                        )
+                                    ) : (
+                                        <div className="w-full bg-gray-700 border rounded-xl px-4 py-3">{user[field.id]}</div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
-                    )}
-                </form>
-                <div className="mt-8 p-4 bg-white/5 rounded-lg">
-                    <h3 className="text-xl font-semibold mb-4">Stats</h3>
-                    <div className="grid grid-cols-2 gap-4 text-sm md:text-base">
-                        <p>
-                            <span className="font-semibold">Squat Reps:</span> {user.totalReps?.squat || 0}
-                        </p>
-                        <p>
-                            <span className="font-semibold">Pushups Reps:</span> {user.totalReps?.pushups || 0}
-                        </p>
-                        <p>
-                            <span className="font-semibold">Lunges Reps:</span> {user.totalReps?.lunges || 0}
-                        </p>
-                        <p>
-                            <span className="font-semibold">Squat Best:</span> {user.personalBest?.squat || 0} kg
-                        </p>
-                        <p>
-                            <span className="font-semibold">Pushups Best:</span> {user.personalBest?.pushups || 0}
-                        </p>
-                        <p>
-                            <span className="font-semibold">Lunges Best:</span> {user.personalBest?.lunges || 0}
-                        </p>
+
+                        <AnimatePresence>
+                            {isEditing && (
+                                <motion.div className="flex justify-end space-x-4 border-t border-white/10 pt-8">
+                                    <button type="button" onClick={handleCancel} className="flex items-center space-x-2 px-6 py-3 rounded-xl bg-gray-600" >
+                                        <FiX className="w-5 h-5" />
+                                        <span>Cancel</span>
+                                    </button>
+                                    <button type="submit" disabled={loading} className="px-6 py-3 rounded-xl bg-purple-500">
+                                        <FiSave className="w-5 h-5" />
+                                        <span>{loading ? "Saving..." : "Save"}</span>
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </form>
+                    <div className="mt-12">
+                        <h3 className="text-xl font-bold mb-6 flex items-center space-x-2">
+                            <FiActivity className="w-6 h-6 text-purple-400" />
+                            <span>Fitness Statistics</span>
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {Object.entries(user.totalReps || { squat: 10, pushups: 10, lunges: 50 }).map(([exercise, reps]) => (
+                                <div key={exercise} className="bg-gray-700/50 p-4 rounded-xl">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-sm text-gray-400 capitalize">{exercise} Reps</p>
+                                            <p className="text-2xl font-bold">{reps}</p>
+                                        </div>
+                                        {statIcons[exercise]}
+                                    </div>
+                                </div>
+                            ))}
+                            {Object.entries(user.personalBest || { squat: 20, pushups: 10, lunges: 50 }).map(([exercise, best]) => (
+                                <div key={exercise} className="bg-gray-700/50 p-4 rounded-xl">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-sm text-gray-400 capitalize">{exercise} Best</p>
+                                            <p className="text-2xl font-bold">{best}{exercise === 'squat' ? 'kg' : ''}</p>
+                                        </div>
+                                        {statIcons[exercise]}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 }
