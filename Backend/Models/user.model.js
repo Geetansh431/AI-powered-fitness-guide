@@ -42,6 +42,12 @@ const userSchema = new mongoose.Schema(
       enum: ["Free", "Premium"],
       default: "Free",
     },
+    likedVideos: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tutorial" 
+      }
+    ],
     personalBest: {
       squat: { type: Number, default: 0 },
       pushups: { type: Number, default: 0 },
