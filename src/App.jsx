@@ -11,6 +11,7 @@ import StrengthWorkout from './components/StrengthWorkout';
 import Programs from './components/Programs';
 import PersonalizedTraining from './components/PersonalizedTraining';
 import Contact from './components/Contact';
+import Progress from './components/Progress';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path='/programs' element={<Programs />} />
         <Route path='/personalizedTraining' element={<PersonalizedTraining />} />
         <Route path='/contact' element={<Contact />} />
+        <Route path='/progress' element={<Progress />} />
       </Routes>
     </Router>
   );
