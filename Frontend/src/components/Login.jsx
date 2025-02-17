@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-hot-toast';
 import {
     Mail,
     Dumbbell,
@@ -21,44 +21,46 @@ const SignIn = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [motivationalPhrase, setMotivationalPhrase] = useState('');
-
     const motivationalPhrases = [
-        "EMBRACE THE GRIND 💪",
-        "LEVEL UP YOUR GAME 🎯",
-        "UNLOCK YOUR POTENTIAL ⚡",
-        "BEYOND LIMITS 🚀",
-        "ELEVATE YOUR SPIRIT 💫"
+        "START YOUR JOURNEY 💪",
+        "BUILD YOUR LEGACY 🏆",
+        "PUSH YOUR LIMITS 🚀",
+        "ACHIEVE GREATNESS ⚡",
+        "ELEVATE YOUR GAME 💫"
     ];
-
     useEffect(() => {
-        const interval = setInterval(() => {
-            const randomPhrase = motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
-            setMotivationalPhrase(randomPhrase);
-        }, 3000);
-        return () => clearInterval(interval);
+        const randomIndex = Math.floor(Math.random() * motivationalPhrases.length);
+        setMotivationalPhrase(motivationalPhrases[randomIndex]);
     }, []);
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-    
-        try {
-            const response = await axiosInstance.post("/auth/login", {
-                email,
-                password,
-            });
-    
-            console.log("Login Success:", response.data);
-            // Handle success (e.g., store token, redirect user)
-        } catch (error) {
-            console.error("Login Failed:", error.response?.data || error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    
 
+        try {
+            const response = await fetch("http://localhost:5001/api/auth/login",{ 
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await response.json();
+            if(response.ok){
+                localStorage.setItem("token", data.token);
+                toast.success("Login successful! Redirecting...", { position: "top-center" });
+                setTimeout(() => {
+                    window.location.href = "/profile";
+                }, 2000);
+            } 
+            else{
+                toast.error(data.message || "Invalid credentials. Try again!", { position: "top-center" });
+            }
+        } 
+        catch (error) {
+            toast.error("Something went wrong. Please try again!", { position: "top-center" });
+        }
+        setIsLoading(false);
+    };
 
     const pulseVariants = {
         initial: { scale: 1, opacity: 0.5 },
