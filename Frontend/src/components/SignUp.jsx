@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-hot-toast';
 import {
   Mail,
   Lock,
@@ -16,6 +17,7 @@ import {
   Trophy,
   Weight
 } from 'lucide-react';
+import { useAuthStore } from '../Store/useAuthStore.jsx';
 
 const SignUp = () => {
   const navigate = useNavigate();

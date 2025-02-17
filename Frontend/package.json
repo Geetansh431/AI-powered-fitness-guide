@@ -16,6 +16,7 @@
     "axios": "^1.7.9",
     "axois": "^0.0.1-security",
     "framer-motion": "^12.4.3",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.475.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -28,7 +29,12 @@
     "react-webcam": "^7.2.0",
     "react-youtube": "^10.1.0",
     "swr": "^2.3.2",
+<<<<<<< Updated upstream
     "tailwindcss": "^4.0.6"
+=======
+    "tailwindcss": "^4.0.6",
+    "zustand": "^5.0.3"
+>>>>>>> Stashed changes
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
