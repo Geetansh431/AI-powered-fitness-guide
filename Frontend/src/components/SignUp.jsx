@@ -14,7 +14,8 @@ import {
   Trophy,
   Weight
 } from 'lucide-react';
-import axiosInstance from "../lib/Axios"
+import { useAuthStore } from '../Store/useAuthStore.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -32,24 +33,31 @@ const SignUp = () => {
     "ELEVATE YOUR GAME 💫"
   ];
 
-  const handleSubmit = async (e) => {
+  const { signup } = useAuthStore();
+  const validateForm = () => {
+    if (!username.trim()) return toast.error("Full Name required")
+    if (!email.trim()) return toast.error("Email required")
+    if (!/\S+@\S+|.|S+/.test(email)) return toast.error("Invalid Email");
+    if (!password.trim()) return toast.error("Password required")
+    if (password.length < 6) return toast.error("Password must be at least 6 characters")
+
+    return true;
+
+  }
+
+
+    const navigate = useNavigate();   
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
+    const success = validateForm();
 
-    try {
-        const response = await axiosInstance.post("/auth/signup", {   fullName : username ,
-            email,
-            password,
-        });
-
-        console.log("Signup Success:", response.data);
-        // Handle success (e.g., store token, redirect user)
-    } catch (error) {
-        console.error("Login Failed:", error.response?.data || error.message);
-    } finally {
-        setIsLoading(false);
+    if (success === true) {
+      signup({fullName : username , email , password } , navigate);
     }
-};
+    setIsLoading(false);
+  }
 
   const pulseVariants = {
     initial: { scale: 1, opacity: 0.5 },

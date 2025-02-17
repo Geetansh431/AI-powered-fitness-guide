@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../Models/user.model.js"
+import { genrateToken } from "../Lib/utils.js";
 
 export const loginController = async (req, res) => {
   const { email, password } = req.body;
@@ -44,29 +45,30 @@ export const signupController = async (req, res) => {
     }
     if (password < 6) {
       return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters" });
+      .status(400)
+      .json({ message: "Password must be at least 6 characters" });
     }
     const user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ message: "User already exists" });
     }
-
+    
     // hashing password
     const salt = await bcrypt.genSalt(10);
     const hashedpassword = await bcrypt.hash(password, salt);
-
+    
     // new user with hashed password being created
     const newUser = new User({
       fullName,
       email,
       password: hashedpassword,
     });
-
+    
     if (newUser) {
       genrateToken(newUser._id, res);
       await newUser.save();
-
+      
+      console.log("Signin successfull");
       return res.status(201).json({
         _id: newUser._id,
         fullName: newUser.fullName,
@@ -78,7 +80,7 @@ export const signupController = async (req, res) => {
     }
   } catch (error) {
     console.log("Error in signing up", error.message);
-
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };

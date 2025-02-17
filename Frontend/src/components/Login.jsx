@@ -14,7 +14,8 @@ import {
     Trophy,
     Weight
 } from 'lucide-react';
-import axiosInstance from "../lib/Axios"
+import { useAuthStore } from '../Store/useAuthStore.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
@@ -39,26 +40,15 @@ const SignIn = () => {
         return () => clearInterval(interval);
     }, []);
 
+    const { login } = useAuthStore();
+    const navigate = useNavigate();   
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
         setIsLoading(true);
-    
-        try {
-            const response = await axiosInstance.post("/auth/login", {
-                email,
-                password,
-            });
-    
-            console.log("Login Success:", response.data);
-            // Handle success (e.g., store token, redirect user)
-        } catch (error) {
-            console.error("Login Failed:", error.response?.data || error.message);
-        } finally {
-            setIsLoading(false);
-        }
+        e.preventDefault();
+        login({email ,  password} , navigate);
+        setIsLoading(false);
     };
-    
 
 
     const pulseVariants = {

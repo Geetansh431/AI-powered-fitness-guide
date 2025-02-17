@@ -11,6 +11,7 @@ import Contact from './components/Contact';
 import Progress from './components/Progress';
 import WorkoutsPage from './components/WorkoutsPage';
 
+
 function App() {
   return (
     <Router>
