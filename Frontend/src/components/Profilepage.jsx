@@ -9,7 +9,6 @@ const statIcons = {
     lunges: <FiAward className="w-6 h-6 text-green-400" />,
 };
 
-// Static User Data
 const initialUser = {
     fullName: "Shwetank Dohroo",
     age: 20,
@@ -70,8 +69,6 @@ export default function Profile() {
                         )}
                     </div>
                 </div>
-
-                {/* Profile Content */}
                 <div className="p-8 space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
                         {[
@@ -89,8 +86,6 @@ export default function Profile() {
                             </motion.div>
                         ))}
                     </div>
-
-                    {/* Editable Fields */}
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {[
@@ -130,7 +125,6 @@ export default function Profile() {
                                 </div>
                             ))}
                         </div>
-
                         <AnimatePresence>
                             {isEditing && (
                                 <motion.div className="flex justify-end space-x-4 border-t border-white/10 pt-8">
