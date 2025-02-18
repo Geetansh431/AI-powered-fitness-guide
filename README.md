@@ -1,6 +1,8 @@
 # AI Fitness Trained Bot
 We are building an AI-powered fitness training assistant to provide personalized workout plans, track progress, and enhance the training experience. Our goal is to make fitness accessible and data-driven for all users.
 
+# Video Link - https://drive.google.com/file/d/17axo0QFEou7FuK7YU2ABMD9HpkM73i0_/view?usp=sharing
+
 ### The Solution
 - AI Model for Posture Detection: Recognizes and counts physical exercises.
 - AI Chatbot for Personalized Advice: Provides fitness and diet recommendations.
