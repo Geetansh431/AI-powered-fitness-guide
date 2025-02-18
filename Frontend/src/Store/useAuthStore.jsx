@@ -5,7 +5,7 @@ import axiosInstance from "../lib/Axios.jsx";
 export const useAuthStore = create((set) => ({
     authUser: null,
     leaderboard: { personalBest: [], totalReps: [] },
-
+isCheckingAuth : null,  
     checkAuth: async () => {
         try {
             const res = await axiosInstance.get("/auth/check");
@@ -21,7 +21,7 @@ export const useAuthStore = create((set) => ({
             set({ authUser: res.data });
             toast.success("Account Created Successfully");
             console.log("Account Created Successfully");
-            navigate("/login");
+            navigate("/profile");
         } catch (error) {
             toast.error("Error while Creating Account");
             console.log("SignUp Error", error.response.data.message);
