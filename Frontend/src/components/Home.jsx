@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Timer, Flame, Heart, Users, Star, Zap, ChevronRight, Crown, Calendar, Award, Facebook, Twitter, Instagram, Linkedin, Dumbbell, Trophy } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import Cardio from "../assets/Cardio.webp";
 import Yoga from "../assets/Yoga.webp";
 import Strength from "../assets/Streng.webp";
@@ -56,6 +57,7 @@ const workoutsData = [
 ];
 
 const Home = () => {
+  const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState('all');
   const [selectedWorkout, setSelectedWorkout] = useState(null);
 
@@ -157,9 +159,9 @@ const Home = () => {
       />
     );
   }
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-
       <motion.div
         className="relative min-h-[80vh] flex items-center justify-center overflow-hidden"
         initial={{ opacity: 0 }}
@@ -193,6 +195,7 @@ const Home = () => {
                   className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-semibold flex items-center gap-2 overflow-hidden"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/Programs')}
                 >
                   <span className="relative z-10">Start Training</span>
                   <Play className="w-5 h-5 relative z-10" />
@@ -208,6 +211,7 @@ const Home = () => {
                   className="px-8 py-4 border border-gray-700 rounded-xl font-semibold flex items-center gap-2"
                   whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.1)' }}
                   whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/Workouts')}
                 >
                   View Programs <ChevronRight className="w-5 h-5" />
                 </motion.button>
@@ -245,8 +249,8 @@ const Home = () => {
                 <motion.button
                   key={plan.id}
                   className={`px-6 py-2 rounded-xl text-sm font-medium transition-colors ${selectedPlan === plan.id
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-                    : 'bg-zinc-900 text-gray-400 hover:text-white'
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                      : 'bg-zinc-900 text-gray-400 hover:text-white'
                     }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -304,7 +308,7 @@ const Home = () => {
                     className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-semibold flex items-center justify-center gap-2"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => handleStartWorkout(workout.workoutId)} // Pass the workout ID
+                    onClick={() => handleStartWorkout(workout.workoutId)}
                   >
                     Start Workout
                     <Play className="w-5 h-5" />
@@ -316,11 +320,9 @@ const Home = () => {
         </div>
       </section>
 
-
       <section className="py-20 px-4 bg-zinc-900/50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12">What Our Users Say</h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <h2 className="text-4xl font-bold text-center mb-12">What Our Users Say</h2><div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
@@ -352,10 +354,8 @@ const Home = () => {
         </div>
       </section>
 
-
       <footer className="bg-zinc-900/50 border-t border-zinc-800 py-12 px-4">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-
           <div>
             <h3 className="text-xl font-bold mb-4">About Us</h3>
             <p className="text-gray-400">
@@ -363,17 +363,15 @@ const Home = () => {
             </p>
           </div>
 
-
           <div>
             <h3 className="text-xl font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><a href="/" className="text-gray-400 hover:text-white">Home</a></li>
-              <li><a href="/programs" className="text-gray-400 hover:text-white">Programs</a></li>
-              <li><a href="/contact" className="text-gray-400 hover:text-white">Contact</a></li>
-              <li><a href="/privacy" className="text-gray-400 hover:text-white">Privacy Policy</a></li>
+              <li><Link to="/" className="text-gray-400 hover:text-white">Home</Link></li>
+              <li><Link to="/programs" className="text-gray-400 hover:text-white">Programs</Link></li>
+              <li><Link to="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
+              <li><Link to="/privacy" className="text-gray-400 hover:text-white">Privacy Policy</Link></li>
             </ul>
           </div>
-
 
           <div>
             <h3 className="text-xl font-bold mb-4">Contact Us</h3>
@@ -383,7 +381,6 @@ const Home = () => {
               <li className="text-gray-400">Address: Rajpura Punjab</li>
             </ul>
           </div>
-
 
           <div>
             <h3 className="text-xl font-bold mb-4">Follow Us</h3>

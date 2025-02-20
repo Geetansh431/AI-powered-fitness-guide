@@ -4,7 +4,8 @@ import axiosInstance from "../lib/Axios.jsx";
 
 export const useAuthStore = create((set) => ({
     authUser: null,
-    
+    leaderboard: { personalBest: [], totalReps: [] },
+isCheckingAuth : null,  
     checkAuth: async () => {
         try {
             const res = await axiosInstance.get("/auth/check");
@@ -20,7 +21,7 @@ export const useAuthStore = create((set) => ({
             set({ authUser: res.data });
             toast.success("Account Created Successfully");
             console.log("Account Created Successfully");
-            navigate("/login");
+            navigate("/profile");
         } catch (error) {
             toast.error("Error while Creating Account");
             console.log("SignUp Error", error.response.data.message);
@@ -64,6 +65,15 @@ export const useAuthStore = create((set) => ({
             toast.success("Profile updated successfully");
         } catch (error) {
             console.log("Error in updating profile pic");
+        }
+    },
+    getLeaderboard: async () => {
+        try {
+            const res = await axiosInstance.get("/auth/leaderboard");
+            set({ leaderboard: res.data.leaderboard || { personalBest: [], totalReps: [] } });
+        } catch (error) {
+            console.error("Error fetching leaderboard:", error);
+            set({ leaderboard: { personalBest: [], totalReps: [] } }); // Ensure it's never undefined
         }
     },
 }));

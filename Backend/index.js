@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./Routes/auth.routes.js";
+import tutorialRoutes from "./Routes/tutorial.routes.js";
 import {connectDB} from "./Lib/db.js"
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
+app.use("/api/tutorial", tutorialRoutes);
 
 app.listen(PORT, () => {
   console.log("App Started on port: " + PORT);

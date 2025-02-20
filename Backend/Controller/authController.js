@@ -4,16 +4,15 @@ import { generateToken } from "../Lib/utils.js";
 
 export const loginController = async (req, res) => {
   const { email, password } = req.body;
-
   try {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({
-        message: "Invalid credentials",
+      return res.status(404).json({
+        message: "No User with this email exists",
       });
     }
-
+    // console.log(password);
     // Checking password with hashed password
     const isCorrPass = await bcrypt.compare(password, user.password);
 
@@ -50,7 +49,7 @@ export const signupController = async (req, res) => {
     }
     const user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(409).json({ message: "User already exists" });
     }
     
     // hashing password
@@ -172,5 +171,40 @@ export const checkAuth = (req, res) => {
   } catch (error) {
     console.log("Error in checkAuth controller : ", error.message);
     return res.status(500).json({ message: "Internal server Error" });
+  }
+};
+
+export const getLeaderboard = async (req, res) => {
+  try {
+    // Get top 20 users based on Personal Best
+    const topPersonalBest = await User.find()
+      .sort({
+        "personalBest.squat": -1,
+        "personalBest.pushups": -1,
+        "personalBest.lunges": -1,
+      })
+      .limit(20)
+      .select("fullName personalBest"); // Selecting only required fields
+
+    // Get top 20 users based on Total Reps
+    const topTotalReps = await User.find()
+      .sort({
+        "totalReps.squat": -1,
+        "totalReps.pushups": -1,
+        "totalReps.lunges": -1,
+      })
+      .limit(20)
+      .select("fullName totalReps");
+
+    return res.status(200).json({
+      success: true,
+      leaderboard: {
+        personalBest: topPersonalBest,
+        totalReps: topTotalReps,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching leaderboard:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };

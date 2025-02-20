@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiUser, FiEdit, FiSave, FiX, FiActivity, FiAward, FiTarget, FiChevronRight } from "react-icons/fi";
+import { useAuthStore } from "../Store/useAuthStore";
 
 const statIcons = {
     squat: <FiActivity className="w-6 h-6 text-purple-400" />,
@@ -27,10 +28,13 @@ export default function Profile() {
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const {updateProfile} = useAuthStore();
+
     const onSubmit = (formData) => {
         setLoading(true);
         setTimeout(() => {
             setUser(formData);
+            updateProfile(user);
             setIsEditing(false);
             setLoading(false);
         }, 1000);
