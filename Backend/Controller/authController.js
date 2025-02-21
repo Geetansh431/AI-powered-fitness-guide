@@ -1,6 +1,28 @@
 import bcrypt from "bcrypt";
 import User from "../Models/user.model.js"
+import multer from 'multer'
 import { generateToken } from "../Lib/utils.js";
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads/profiles')
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`)
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'image/png') {
+      cb(null, true);
+    } 
+    else {
+      cb(new Error('only PNG files are allowed'));
+    }
+  }
+});
 
 export const loginController = async (req, res) => {
   const { email, password } = req.body;
@@ -42,31 +64,29 @@ export const signupController = async (req, res) => {
     if (!email || !password || !fullName) {
       return res.status(400).json({ message: "All input fields required" });
     }
-    if (password < 6) {
-      return res
-      .status(400)
-      .json({ message: "Password must be at least 6 characters" });
+    if (password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
     }
     const user = await User.findOne({ email });
     if (user) {
       return res.status(409).json({ message: "User already exists" });
     }
-    
+
     // hashing password
     const salt = await bcrypt.genSalt(10);
     const hashedpassword = await bcrypt.hash(password, salt);
-    
+
     // new user with hashed password being created
     const newUser = new User({
       fullName,
       email,
       password: hashedpassword,
     });
-    
+
     if (newUser) {
       generateToken(newUser._id, res);
       await newUser.save();
-      
+
       console.log("Signin successfull");
       return res.status(201).json({
         _id: newUser._id,
@@ -79,7 +99,7 @@ export const signupController = async (req, res) => {
     }
   } catch (error) {
     console.log("Error in signing up", error.message);
-    
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -120,18 +140,13 @@ export const updateProfileController = async (req, res) => {
     if (fitnessGoals) updates.fitnessGoals = fitnessGoals;
     if (dailyCaloricIntake) updates.dailyCaloricIntake = dailyCaloricIntake;
 
-    // Handle nested objects for personalBest
     if (personalBest) {
-      // Check each nested field separately
       if (!updates.personalBest) updates.personalBest = {};
       if (personalBest.squat !== undefined) updates.personalBest.squat = personalBest.squat;
       if (personalBest.pushups !== undefined) updates.personalBest.pushups = personalBest.pushups;
       if (personalBest.lunges !== undefined) updates.personalBest.lunges = personalBest.lunges;
     }
-
-    // Handle nested objects for totalReps
     if (totalReps) {
-      // Check each nested field separately
       if (!updates.totalReps) updates.totalReps = {};
       if (totalReps.squat !== undefined) updates.totalReps.squat = totalReps.squat;
       if (totalReps.pushups !== undefined) updates.totalReps.pushups = totalReps.pushups;
@@ -208,3 +223,32 @@ export const getLeaderboard = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+export const getCurrUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+    return res.status(200).json({
+      //itna saara...
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      profilePic: user.profilePic,
+      age: user.age,
+      height: user.height,
+      weight: user.weight,
+      gender: user.gender,
+      fitnessGoals: user.fitnessGoals,
+      subscriptionPlan: user.subscriptionPlan,
+      totalReps: user.totalReps,
+      personalBest: user.personalBest,
+    });
+  }
+  catch (error) {
+    console.error("error fetching user", error.message);
+    return res.status(500).json({ message: "server error" });
+  }
+};
+

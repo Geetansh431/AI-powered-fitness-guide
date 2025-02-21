@@ -34,13 +34,43 @@ const SignIn = () => {
         setMotivationalPhrase(motivationalPhrases[randomIndex]);
     }, []);
 
-    const { login} = useAuthStore();
-    const navigate = useNavigate();   
+    const { login } = useAuthStore();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        setIsLoading(true);
         e.preventDefault();
-        await login({email ,  password} , navigate);
+        setIsLoading(true);
+
+        const success = await login({ email, password });
+        if (success) {
+            try {
+                const response = await fetch("http://localhost:5001/api/auth/profile", {
+                    method: "GET",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (!response.ok) throw new Error("Failed to fetch profile data");
+
+                const userData = await response.json();
+
+                const requiredFields = ["age", "height", "weight", "gender", "fitnessGoals"];
+                const missingFields = requiredFields.filter(field => !userData[field]);
+
+                if (missingFields.length > 0) {
+                    navigate("/infoInput", { state: { missingFields } });
+                }
+                else {
+                    navigate("/profile");
+                }
+            } 
+            catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        }
+
         setIsLoading(false);
     };
 
