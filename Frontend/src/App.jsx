@@ -47,7 +47,7 @@ function App() {
           element={<ProtectedRoute element={<Challenges />} authUser={authUser} />} 
         />
         <Route 
-          path="/exercise/:id" 
+          path="/exercise/:id/:difficulty" 
           element={<ProtectedRoute element={<Exercise />} authUser={authUser} />} 
         />
         <Route 

@@ -163,7 +163,7 @@ const SignUp = () => {
             style={{ opacity: 0.5 }}
           />
 
-          <div className="p-8 relative">import express from "express";
+          <div className="p-8 relative">
 
             <motion.div
               initial={{ opacity: 0, y: -20 }}

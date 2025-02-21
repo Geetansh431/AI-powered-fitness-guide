@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
-import User from "../Models/user.model.js"
+import User from "../Models/user.model.js";
 import { generateToken } from "../Lib/utils.js";
+import jwt from "jsonwebtoken";
+import { sendForgotMail, sendMail } from "../Middleware/sendMail.js";
 
 export const loginController = async (req, res) => {
   const { email, password } = req.body;
@@ -12,7 +14,6 @@ export const loginController = async (req, res) => {
         message: "No User with this email exists",
       });
     }
-    // console.log(password);
     // Checking password with hashed password
     const isCorrPass = await bcrypt.compare(password, user.password);
 
@@ -44,44 +45,80 @@ export const signupController = async (req, res) => {
     }
     if (password < 6) {
       return res
-      .status(400)
-      .json({ message: "Password must be at least 6 characters" });
+        .status(400)
+        .json({ message: "Password must be at least 6 characters" });
     }
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
     if (user) {
       return res.status(409).json({ message: "User already exists" });
     }
-    
+
     // hashing password
     const salt = await bcrypt.genSalt(10);
     const hashedpassword = await bcrypt.hash(password, salt);
-    
-    // new user with hashed password being created
-    const newUser = new User({
+    user = {
       fullName,
       email,
       password: hashedpassword,
+    };
+    const otp = Math.floor(Math.random() * 1000000);
+
+    const activationToken = jwt.sign(
+      {
+        user,
+        otp,
+      },
+      process.env.JWT_TOKEN,
+      {
+        expiresIn: "5m",
+      }
+    );
+
+    const data = {
+      fullName,
+      otp,
+    };
+
+    await sendMail(email, "FitAI PRO", data);
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent to your Email..",
+      activationToken,
     });
-    
-    if (newUser) {
-      generateToken(newUser._id, res);
-      await newUser.save();
-      
-      console.log("Signin successfull");
-      return res.status(201).json({
-        _id: newUser._id,
-        fullName: newUser.fullName,
-        email: newUser.email,
-        profilePic: newUser.profilePic,
-      });
-    } else {
-      return res.status(400).json({ message: "Invalid user data" });
-    }
   } catch (error) {
     console.log("Error in signing up", error.message);
-    
+
     return res.status(500).json({ message: "Internal server error" });
   }
+};
+
+export const verifyUser = async (req, res) => {
+  const { otp, activationToken } = req.body;
+
+  console.log(activationToken);
+  console.log(otp);
+  const verify = jwt.verify(activationToken, process.env.JWT_TOKEN);
+
+  if (!verify)
+    return res.status(400).json({
+      message: "Otp Expired",
+    });
+
+  if (verify.otp !== otp)
+    return res.status(400).json({
+      message: "Wrong Otp",
+    });
+
+  await User.create({
+    fullName: verify.user.fullName,
+    email: verify.user.email,
+    password: verify.user.password,
+    role: verify.user.role,
+  });
+
+  res.json({
+    message: "User Registered",
+  });
 };
 
 export const logoutController = async (req, res) => {
@@ -105,7 +142,7 @@ export const updateProfileController = async (req, res) => {
       fitnessGoals,
       dailyCaloricIntake,
       personalBest,
-      totalReps
+      totalReps,
     } = req.body;
 
     // Create an object to store fields that need to be updated
@@ -124,18 +161,24 @@ export const updateProfileController = async (req, res) => {
     if (personalBest) {
       // Check each nested field separately
       if (!updates.personalBest) updates.personalBest = {};
-      if (personalBest.squat !== undefined) updates.personalBest.squat = personalBest.squat;
-      if (personalBest.pushups !== undefined) updates.personalBest.pushups = personalBest.pushups;
-      if (personalBest.lunges !== undefined) updates.personalBest.lunges = personalBest.lunges;
+      if (personalBest.squat !== undefined)
+        updates.personalBest.squat = personalBest.squat;
+      if (personalBest.pushups !== undefined)
+        updates.personalBest.pushups = personalBest.pushups;
+      if (personalBest.lunges !== undefined)
+        updates.personalBest.lunges = personalBest.lunges;
     }
 
     // Handle nested objects for totalReps
     if (totalReps) {
       // Check each nested field separately
       if (!updates.totalReps) updates.totalReps = {};
-      if (totalReps.squat !== undefined) updates.totalReps.squat = totalReps.squat;
-      if (totalReps.pushups !== undefined) updates.totalReps.pushups = totalReps.pushups;
-      if (totalReps.lunges !== undefined) updates.totalReps.lunges = totalReps.lunges;
+      if (totalReps.squat !== undefined)
+        updates.totalReps.squat = totalReps.squat;
+      if (totalReps.pushups !== undefined)
+        updates.totalReps.pushups = totalReps.pushups;
+      if (totalReps.lunges !== undefined)
+        updates.totalReps.lunges = totalReps.lunges;
     }
 
     // If no updates were provided
@@ -144,11 +187,10 @@ export const updateProfileController = async (req, res) => {
     }
 
     // Update user with provided fields
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      updates,
-      { new: true, runValidators: true }
-    );
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
@@ -157,7 +199,7 @@ export const updateProfileController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Profile updated successfully",
-      user: updatedUser
+      user: updatedUser,
     });
   } catch (error) {
     console.log("Profile Update Error: ", error.message);
@@ -205,6 +247,76 @@ export const getLeaderboard = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching leaderboard:", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong.. Please try again later",
+    });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No User found with this email" });
+    }
+
+    const expire = Date.now() + 5 * 60 * 1000;
+
+    const token = jwt.sign({ email }, process.env.forgot_secret);
+    const data = { email, token, expire };
+
+    await sendForgotMail("FitAI PRO", data);
+
+    res.json({
+      message: "Reset Password Link is send to you mail",
+      token,
+    });
+  } catch (error) {
+    console.error("Error in forgot password : ", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const decoded = jwt.verify(req.query?.token, process.env.forgot_secret);
+
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No User found with this email" });
+    }
+
+    if (decoded.expire === null || decoded.expire < Date.now()) {
+      return res.status(400).json({ success: false, message: "Token expired" });
+    }
+
+    const password = await bcrypt.hash(req.body?.password, 10);
+
+    user.password = password;
+    await user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error in reset password ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong.. Please try again later",
+    });
   }
 };
