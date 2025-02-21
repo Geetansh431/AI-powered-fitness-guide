@@ -328,7 +328,7 @@ const SignIn = () => {
                                     <span className="transition-colors">Remember me</span>
                                 </label>
                                 <motion.a
-                                    href="#"
+                                    href="/otpreset"
                                     className="text-indigo-500 hover:text-indigo-400"
                                     whileHover={{ scale: 1.05, x: 3 }}
                                 >

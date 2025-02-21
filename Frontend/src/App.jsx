@@ -15,6 +15,7 @@ import Profile from "./components/Profilepage";
 import OTPReset from "./components/otpPage";
 import Otp from "./components/OTP";
 import Info from "./components/Infoinput";
+import ResetPassword from "./components/resetPassword";
 import { useAuthStore } from "./Store/useAuthStore";
 import { useEffect } from "react";
 import ProtectedRoute from "./lib/ProtectedRoute";
@@ -44,7 +45,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/otpreset" element={<OTPReset />} />
-
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         {/* login needed */}
         <Route path="/challenges" element={<ProtectedRoute element={<Challenges />} authUser={authUser} />} />
         <Route path="/exercise/:id" element={<ProtectedRoute element={<Exercise />} authUser={authUser} />} />
