@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Toaster } from "react-hot-toast"; // Import Toaster
+import { Toaster } from "react-hot-toast";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Challenges from "./components/Challenges";
@@ -13,6 +13,7 @@ import Progress from "./components/Progress";
 import WorkoutsPage from "./components/WorkoutsPage";
 import Profile from "./components/Profilepage";
 import OTPReset from "./components/otpPage";
+import Otp from "./components/OTP";
 import Info from "./components/Infoinput";
 import { useAuthStore } from "./Store/useAuthStore";
 import { useEffect } from "react";
@@ -54,6 +55,7 @@ function App() {
         <Route path="/workouts" element={<ProtectedRoute element={<WorkoutsPage />} authUser={authUser} />} />
         <Route path="/profile" element={<ProtectedRoute element={<Profile />} authUser={authUser} />} />
         <Route path="/infoInput" element={<ProtectedRoute element={<Info />} authUser={authUser} />} />
+        <Route path="/otpsignup" element={<ProtectedRoute element={<Otp />} authUser={authUser} />} />
       </Routes>
     </Router>
   );

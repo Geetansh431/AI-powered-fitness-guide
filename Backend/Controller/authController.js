@@ -117,6 +117,7 @@ export const verifyUser = async (req, res) => {
   });
 
   res.json({
+    success: true,
     message: "User Registered",
   });
 };

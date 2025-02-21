@@ -18,9 +18,10 @@ export const useAuthStore = create((set) => ({
     signup: async (data, navigate) => {
         try {
             const res = await axiosInstance.post("/auth/signup", data, { withCredentials: true });
+            localStorage.setItem("activationToken", res.data.activationToken);
             set({ authUser: res.data });
-            toast.success("Account Created Successfully");
-            navigate("/login");
+            toast.success("OTP sent to your mail");
+            navigate("/otpsignup");
         } catch (error) {
             toast.error("Error while Creating Account");
             console.log("SignUp Error", error.response?.data?.message);

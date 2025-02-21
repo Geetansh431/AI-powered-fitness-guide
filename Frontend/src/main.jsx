@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
 import { Toaster } from 'react-hot-toast';
-import './components/i18n.jsx'; // Import the i18n configuration
+import './components/i18n.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

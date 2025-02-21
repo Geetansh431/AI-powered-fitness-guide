@@ -42,7 +42,6 @@ const SignUp = () => {
     if (!/\S+@\S+|.|S+/.test(email)) return toast.error("Invalid Email");
     if (!password.trim()) return toast.error("Password required")
     if (password.length < 6) return toast.error("Password must be at least 6 characters")
-
     return true;
 
   }
@@ -54,7 +53,6 @@ const SignUp = () => {
     e.preventDefault();
     setIsLoading(true);
     const success = await validateForm();
-
     if (success === true) {
       await signup({ fullName: username, email, password }, navigate);
     }
