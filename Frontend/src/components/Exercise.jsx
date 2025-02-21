@@ -5,20 +5,15 @@ const Exercise = () => {
     const [time, setTime] = useState(0);
     const [isStreaming, setIsStreaming] = useState(true);
     const [exerciseData, setExerciseData] = useState({
-        pushup_count: 0,
-        squat_count: 0,
-        crunch_count: 0,
-        feedback: {
-            pushup: "Waiting for data...",
-            squat: "Waiting for data...",
-            crunch: "Waiting for data...",
-        },
+        active_exercise : "",
+        count:0,
+        feedback:"",
     });
 
 
     const navigate = useNavigate();
-    const videoStreamURL = "http://127.0.0.1:8080";
-    const exerciseDataURL = "http://127.0.0.1:8080/exercise-data";
+    const videoStreamURL = "http://127.0.0.1:5002";
+    const exerciseDataURL = "http://127.0.0.1:5002/exercise-data";
 
 
     useEffect(() => {
@@ -94,12 +89,8 @@ const Exercise = () => {
 
             <div className="mt-6 bg-white p-6 rounded-lg shadow-lg">
                 <h2 className="text-xl font-semibold text-gray-800">Exercise Count</h2>
-                <p className="text-lg text-gray-700">Push-ups: {exerciseData.pushup_count}</p>
-                <p className="text-lg text-gray-700">Squats: {exerciseData.squat_count}</p>
-                <p className="text-lg text-gray-700">Crunches: {exerciseData.crunch_count}</p>
-                <p className="text-lg text-gray-700">Feedback pushup: {exerciseData.feedback.pushup}</p>
-                <p className="text-lg text-gray-700">Feedback squat: {exerciseData.feedback.squat}</p>
-                <p className="text-lg text-gray-700">Feedback crunch: {exerciseData.feedback.crunch}</p>
+                <p className="text-lg text-gray-700">Push-ups: {exerciseData.count}</p>
+                <p className="text-lg text-gray-700">Feedback for {exerciseData.active_exercise} : {exerciseData.feedback}</p>
             </div>
         </div>
     );
