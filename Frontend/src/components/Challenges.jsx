@@ -1,71 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, Flame, ChevronRight, Dumbbell, Filter, Search, X } from 'lucide-react';
+import { Clock, Hash, ChevronRight, Dumbbell, Filter, Search, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-
-
-const exercises = [
-    {
-        id: 1,
-        name: 'Push-ups',
-        description: 'Build upper body strength',
-        type: 'strength',
-        muscleGroup: 'upper body',
-        durations: [
-            { minutes: 5, difficulty: 'Beginner', calories: 50 },
-            { minutes: 10, difficulty: 'Intermediate', calories: 100 },
-            { minutes: 15, difficulty: 'Advanced', calories: 150 }
-        ]
-    },
-    {
-        id: 2,
-        name: 'Squats',
-        description: 'Strengthen your lower body',
-        type: 'strength',
-        muscleGroup: 'lower body',
-        durations: [
-            { minutes: 5, difficulty: 'Beginner', calories: 40 },
-            { minutes: 10, difficulty: 'Intermediate', calories: 80 },
-            { minutes: 15, difficulty: 'Advanced', calories: 120 }
-        ]
-    },
-    {
-        id: 3,
-        name: 'Plank',
-        description: 'Core stability master',
-        type: 'core',
-        muscleGroup: 'core',
-        durations: [
-            { minutes: 5, difficulty: 'Beginner', calories: 30 },
-            { minutes: 10, difficulty: 'Intermediate', calories: 60 },
-            { minutes: 15, difficulty: 'Advanced', calories: 90 }
-        ]
-    },
-    {
-        id: 4,
-        name: 'Burpees',
-        description: 'Full body intensity',
-        type: 'cardio',
-        muscleGroup: 'full body',
-        durations: [
-            { minutes: 5, difficulty: 'Beginner', calories: 70 },
-            { minutes: 10, difficulty: 'Intermediate', calories: 140 },
-            { minutes: 15, difficulty: 'Advanced', calories: 210 }
-        ]
-    },
-    {
-        id: 5,
-        name: 'Mountain Climbers',
-        description: 'Cardio champion',
-        type: 'cardio',
-        muscleGroup: 'full body',
-        durations: [
-            { minutes: 5, difficulty: 'Beginner', calories: 45 },
-            { minutes: 10, difficulty: 'Intermediate', calories: 90 },
-            { minutes: 15, difficulty: 'Advanced', calories: 135 }
-        ]
-    }
-];
+import { useChallengesStore } from '../Store/useChallengesStore';
 
 const Challenges = () => {
     const [hoveredCard, setHoveredCard] = useState(null);
@@ -73,8 +10,9 @@ const Challenges = () => {
     const [selectedMuscleGroups, setSelectedMuscleGroups] = useState(new Set());
     const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    
+    const {exercises} = useChallengesStore();
     const [filteredExercises, setFilteredExercises] = useState(exercises);
-
     const uniqueTypes = [...new Set(exercises.map(ex => ex.type))];
     const uniqueMuscleGroups = [...new Set(exercises.map(ex => ex.muscleGroup))];
 
@@ -118,15 +56,12 @@ const Challenges = () => {
     const { t } = useTranslation();
     
     return (
-        
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900 text-white py-12 px-4">
             <div className="max-w-6xl mx-auto">
-                
                 <div className="mb-16 text-center">
                     <h1 className="text-6xl font-bold mb-6 pt-8 pb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 tracking-tight">
-                    {t("Daily Challenges")}
+                        {t("Daily Challenges")}
                     </h1>
-                    
                     
                     <div className="max-w-2xl mx-auto mt-8">
                         <div className="relative flex items-center mb-6">
@@ -247,7 +182,7 @@ const Challenges = () => {
                                     <div className="space-y-3">
                                         {exercise.durations.map((duration) => (
                                             <Link
-                                                to={`/exercise/${exercise.id}?duration=${duration.minutes}`}
+                                                to={`/exercise/${exercise.id}/${duration.difficulty}?duration=${duration.minutes}`}
                                                 key={`${exercise.id}-${duration.minutes}`}
                                                 className="block"
                                             >
@@ -270,8 +205,8 @@ const Challenges = () => {
                                                     
                                                     <div className="flex items-center justify-between text-sm">
                                                         <div className="flex items-center gap-2">
-                                                            <Flame size={16} className="text-orange-400" />
-                                                            <span className="text-gray-300">{duration.calories} kcal</span>
+                                                            <Hash size={16} className="text-orange-400" />
+                                                            <span className="text-gray-300">{duration.calories} reps</span>
                                                         </div>
                                                         <div className="flex items-center gap-1 text-purple-400 group-hover:translate-x-1 transition-transform">
                                                             <span>Start</span>
