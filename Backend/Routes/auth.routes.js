@@ -1,7 +1,6 @@
 import express from "express"
 import  {protectRoute}  from "../Middleware/protectRoute.middleware.js";
-import { loginController, signupController, logoutController, updateProfileController, checkAuth,getLeaderboard , getCurrUser } from "../Controller/authController.js";
-import { loginController, signupController, logoutController, updateProfileController, checkAuth,getLeaderboard, forgotPassword, resetPassword, verifyUser } from "../Controller/authController.js";
+import { loginController, signupController, logoutController, updateProfileController, checkAuth,getLeaderboard, getCurrUser, forgotPassword, resetPassword, verifyUser } from "../Controller/authController.js";
 
 
 
