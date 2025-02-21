@@ -4,7 +4,7 @@ export const useChallengesStore = create((get,set) => ({
     exercises : [
         {
             id: 1,
-            name: 'Push-ups',
+            name: 'Pushups',
             description: 'Build upper body strength',
             type: 'strength',
             muscleGroup: 'upper body',

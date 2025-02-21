@@ -47,7 +47,7 @@ function App() {
 
         {/* login needed */}
         <Route path="/challenges" element={<ProtectedRoute element={<Challenges />} authUser={authUser} />} />
-        <Route path="/exercise/:id" element={<ProtectedRoute element={<Exercise />} authUser={authUser} />} />
+        <Route path="/exercise/:id/:difficulty" element={<ProtectedRoute element={<Exercise />} authUser={authUser} />} />
         <Route path="/programs" element={<ProtectedRoute element={<Programs />} authUser={authUser} />} />
         <Route path="/personalizedTraining" element={<ProtectedRoute element={<PersonalizedTraining />} authUser={authUser} />} />
         <Route path="/contact" element={<ProtectedRoute element={<Contact />} authUser={authUser} />} />
