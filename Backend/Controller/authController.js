@@ -1,8 +1,28 @@
 import bcrypt from "bcrypt";
-import User from "../Models/user.model.js";
+import User from "../Models/user.model.js"
+import multer from 'multer'
 import { generateToken } from "../Lib/utils.js";
-import jwt from "jsonwebtoken";
-import { sendForgotMail, sendMail } from "../Middleware/sendMail.js";
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads/profiles')
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`)
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'image/png') {
+      cb(null, true);
+    } 
+    else {
+      cb(new Error('only PNG files are allowed'));
+    }
+  }
+});
 
 export const loginController = async (req, res) => {
   const { email, password } = req.body;
@@ -43,10 +63,8 @@ export const signupController = async (req, res) => {
     if (!email || !password || !fullName) {
       return res.status(400).json({ message: "All input fields required" });
     }
-    if (password < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters" });
+    if (password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
     }
     let user = await User.findOne({ email });
     if (user) {
@@ -56,35 +74,28 @@ export const signupController = async (req, res) => {
     // hashing password
     const salt = await bcrypt.genSalt(10);
     const hashedpassword = await bcrypt.hash(password, salt);
-    user = {
+
+    // new user with hashed password being created
+    const newUser = new User({
       fullName,
       email,
       password: hashedpassword,
-    };
-    const otp = Math.floor(Math.random() * 1000000);
-
-    const activationToken = jwt.sign(
-      {
-        user,
-        otp,
-      },
-      process.env.JWT_TOKEN,
-      {
-        expiresIn: "5m",
-      }
-    );
-
-    const data = {
-      fullName,
-      otp,
-    };
-
-    await sendMail(email, "FitAI PRO", data);
-    return res.status(200).json({
-      success: true,
-      message: "OTP sent to your Email..",
-      activationToken,
     });
+
+    if (newUser) {
+      generateToken(newUser._id, res);
+      await newUser.save();
+
+      console.log("Signin successfull");
+      return res.status(201).json({
+        _id: newUser._id,
+        fullName: newUser.fullName,
+        email: newUser.email,
+        profilePic: newUser.profilePic,
+      });
+    } else {
+      return res.status(400).json({ message: "Invalid user data" });
+    }
   } catch (error) {
     console.log("Error in signing up", error.message);
 
@@ -157,9 +168,7 @@ export const updateProfileController = async (req, res) => {
     if (fitnessGoals) updates.fitnessGoals = fitnessGoals;
     if (dailyCaloricIntake) updates.dailyCaloricIntake = dailyCaloricIntake;
 
-    // Handle nested objects for personalBest
     if (personalBest) {
-      // Check each nested field separately
       if (!updates.personalBest) updates.personalBest = {};
       if (personalBest.squat !== undefined)
         updates.personalBest.squat = personalBest.squat;
@@ -168,10 +177,7 @@ export const updateProfileController = async (req, res) => {
       if (personalBest.lunges !== undefined)
         updates.personalBest.lunges = personalBest.lunges;
     }
-
-    // Handle nested objects for totalReps
     if (totalReps) {
-      // Check each nested field separately
       if (!updates.totalReps) updates.totalReps = {};
       if (totalReps.squat !== undefined)
         updates.totalReps.squat = totalReps.squat;
@@ -247,76 +253,35 @@ export const getLeaderboard = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching leaderboard:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong.. Please try again later",
-    });
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
-
-export const forgotPassword = async (req, res) => {
+export const getCurrUser = async (req, res) => {
   try {
-    const { email } = req.body;
-    if (!email) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email is required" });
-    }
-
-    const user = await User.findOne({ email });
+    const userId = req.user._id;
+    const user = await User.findById(userId).select("-password");
     if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No User found with this email" });
+      return res.status(404).json({ message: "user not found" });
     }
-
-    const expire = Date.now() + 5 * 60 * 1000;
-
-    const token = jwt.sign({ email }, process.env.forgot_secret);
-    const data = { email, token, expire };
-
-    await sendForgotMail("FitAI PRO", data);
-
-    res.json({
-      message: "Reset Password Link is send to you mail",
-      token,
+    return res.status(200).json({
+      //itna saara...
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      profilePic: user.profilePic,
+      age: user.age,
+      height: user.height,
+      weight: user.weight,
+      gender: user.gender,
+      fitnessGoals: user.fitnessGoals,
+      subscriptionPlan: user.subscriptionPlan,
+      totalReps: user.totalReps,
+      personalBest: user.personalBest,
     });
-  } catch (error) {
-    console.error("Error in forgot password : ", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error" });
+  }
+  catch (error) {
+    console.error("error fetching user", error.message);
+    return res.status(500).json({ message: "server error" });
   }
 };
 
-export const resetPassword = async (req, res) => {
-  try {
-    const decoded = jwt.verify(req.query?.token, process.env.forgot_secret);
-
-    const user = await User.findOne({ email: decoded.email });
-    if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No User found with this email" });
-    }
-
-    if (decoded.expire === null || decoded.expire < Date.now()) {
-      return res.status(400).json({ success: false, message: "Token expired" });
-    }
-
-    const password = await bcrypt.hash(req.body?.password, 10);
-
-    user.password = password;
-    await user.save();
-
-    res
-      .status(200)
-      .json({ success: true, message: "Password updated successfully" });
-  } catch (error) {
-    console.error("Error in reset password ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong.. Please try again later",
-    });
-  }
-};
