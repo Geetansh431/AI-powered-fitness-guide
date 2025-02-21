@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
 
 const Otp = () => {
     const [otp, setOtp] = useState("");
@@ -21,7 +22,8 @@ const Otp = () => {
             const activationToken = localStorage.getItem("activationToken");
             if (!activationToken) {
                 toast.error("No activation token found. Please sign up again.");
-                return setIsLoading(false);
+                setIsLoading(false);
+                return;
             }
             const response = await axios.post(
                 "http://localhost:5001/api/auth/verify",
@@ -44,15 +46,35 @@ const Otp = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900">
-            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-96 text-center">
-                <h2 className="text-white text-2xl font-bold mb-4">Enter OTP</h2>
-                <p className="text-gray-400 mb-6">We have sent a 6-digit code to your email.</p>
-                <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} maxLength={6} className="w-full px-4 py-2 rounded-md border bg-gray-700 text-white text-center" placeholder="Enter OTP" />
-                <button onClick={handleVerifyOtp} disabled={isLoading} className="mt-4 w-full py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition" >
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-800 via-indigo-800 to-blue-800 p-4">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="bg-gray-900 bg-opacity-80 backdrop-filter backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-full max-w-sm"
+            >
+                <h2 className="text-white text-3xl font-bold mb-4 text-center">
+                    Verify Your OTP
+                </h2>
+                <p className="text-gray-400 mb-6 text-center">
+                    Enter the 6-digit code sent to your email
+                </p>
+                <input
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    maxLength={6}
+                    className="w-full px-4 py-3 rounded-md border border-gray-700 bg-gray-800 text-white text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                    placeholder="Enter OTP"
+                />
+                <button
+                    onClick={handleVerifyOtp}
+                    disabled={isLoading}
+                    className="mt-6 w-full py-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-md transition duration-200"
+                >
                     {isLoading ? "Verifying..." : "Verify OTP"}
                 </button>
-            </div>
+            </motion.div>
         </div>
     );
 };

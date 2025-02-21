@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export const useAuthStore = create((set) => ({
     authUser: null,
-    isCheckingAuth: true, // start as true so we know we are checking on load
+    isCheckingAuth: true,
     checkAuth: async () => {
         try {
             const res = await axiosInstance.get("/auth/check", { withCredentials: true });
