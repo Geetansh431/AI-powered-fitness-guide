@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Dumbbell, Trophy, BarChart, BrainCircuit } from 'lucide-react';
+import { Menu, X, Dumbbell, Trophy, BarChart, BrainCircuit, Globe } from 'lucide-react';
 import { useAuthStore } from '../Store/useAuthStore';
+import LanguageSwitcher from './LanguageSwitcher'; // Import the LanguageSwitcher component
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -21,14 +22,11 @@ const Header = () => {
 
   return (
     <>
-
       <div className="h-20 w-full"></div>
 
       <header className="fixed w-full top-0 z-50 bg-gradient-to-r from-zinc-950/95 to-zinc-900/95 backdrop-blur-xl border-b border-zinc-800/50">
         <nav className="max-w-7xl mx-auto px-6 h-20">
-
           <div className="flex items-center justify-between h-full">
-
             <Link to="/">
               <motion.div
                 className="flex items-center gap-3"
@@ -46,7 +44,6 @@ const Header = () => {
                 </span>
               </motion.div>
             </Link>
-
 
             <div className="hidden md:flex items-center gap-10">
               {navItems.map((item, index) => (
@@ -73,10 +70,14 @@ const Header = () => {
               ))}
             </div>
 
-            <div className="hidden md:flex items-center gap-6">
+            <div className="flex items-center gap-6">
+              {/* Language Switcher */}
+              <LanguageSwitcher />
+
               {authUser ? (
                 <Link to="/profile">
-                  <motion.button className="px-6 py-2.5 text-gray-300 hover:text-white font-medium rounded-lg hover:bg-zinc-800/50 transition-all duration-300"
+                  <motion.button
+                    className="px-6 py-2.5 text-gray-300 hover:text-white font-medium rounded-lg hover:bg-zinc-800/50 transition-all duration-300"
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                   >
@@ -105,19 +106,17 @@ const Header = () => {
                   </Link>
                 </>
               )}
+
+              <motion.button
+                className="p-3 md:hidden text-gray-300 hover:text-white bg-zinc-800/50 rounded-lg"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </motion.button>
             </div>
-
-
-            <motion.button
-              className="p-3 md:hidden text-gray-300 hover:text-white bg-zinc-800/50 rounded-lg"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </motion.button>
           </div>
-
 
           <AnimatePresence>
             {isMobileMenuOpen && (
@@ -149,7 +148,6 @@ const Header = () => {
                     </motion.div>
                   ))}
                   <div className="pt-6 border-t border-zinc-800/50 space-y-4">
-
                     {authUser ? (
                       <Link
                         to="/profile"
@@ -176,7 +174,6 @@ const Header = () => {
                         </Link>
                       </div>
                     )}
-
                   </div>
                 </div>
               </motion.div>
