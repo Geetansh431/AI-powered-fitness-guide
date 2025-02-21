@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import Axios from "../lib/Axios";
 
 function ForgotPassword() {
     const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ function ForgotPassword() {
         setMessage("");
 
         try {
-            const response = await axios.post("http://localhost:5001/api/auth/forgot", { email });
+            const response = await Axios.post("auth/forgot", { email });
             setMessage(response.data.message);
             console.log("Received token:", response.data.token);
         } 

@@ -14,16 +14,17 @@ const Exercise = () => {
     const duration = durationData?.minutes || 15;
 
     // Determine port based on exercise name
-    const getPort = () => {
+    const getBaseURL = () => {
         const exerciseName = exercise?.name?.toLowerCase();
-        if (exerciseName === 'pushup') return '8002';
-        if (exerciseName === 'squats') return '8003';
-        return '8001';
+        if (exerciseName === "pushup") return import.meta.env.VITE_PUSHUP_URL ;
+        if (exerciseName === "squats") return import.meta.env.VITE_SQUAT_URL ;
+        return import.meta.env.VITE_DEFAULT_URL ;
     };
-
-    const port = getPort();
-    const videoStreamURL = `http://localhost:${port}`;
-    const exerciseDataURL = `http://localhost:${port}/exercise-data`;
+    
+    const baseURL = getBaseURL();
+    const videoStreamURL = `${baseURL}`;
+    const exerciseDataURL = `${baseURL}/exercise-data`;
+    
 
     const [timeLeft, setTimeLeft] = useState(duration * 60);
     const [isStreaming, setIsStreaming] = useState(true);
@@ -41,10 +42,6 @@ const Exercise = () => {
         count: 0,
         feedback: ""
     });
-    // const videoStreamURL = "http://localhost:8002";
-    // const exerciseDataURL = "http://localhost:8002/exercise-data";
-
-
 
     useEffect(() => {
         if (!exercise || !isWorkoutStarted || isPaused) return;

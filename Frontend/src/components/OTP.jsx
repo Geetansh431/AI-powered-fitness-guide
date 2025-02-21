@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
+import Axios from "../lib/Axios";
 
 const Otp = () => {
     const [otp, setOtp] = useState("");
@@ -25,8 +25,7 @@ const Otp = () => {
                 setIsLoading(false);
                 return;
             }
-            const response = await axios.post(
-                "http://localhost:5001/api/auth/verify",
+            const response = await Axios.post("auth/verify",
                 { otp: otpNumber, activationToken },
                 { headers: { "Content-Type": "application/json" } }
             );

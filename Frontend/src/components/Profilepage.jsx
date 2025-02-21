@@ -14,6 +14,7 @@ import {
     FiLogOut,
 } from "react-icons/fi";
 import { useAuthStore } from "../Store/useAuthStore";
+import Axios from "../lib/Axios";
 
 const statIcons = {
     squat: <FiActivity className="w-6 h-6 text-purple-400" />,
@@ -31,7 +32,7 @@ export default function Profile() {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const { data } = await axios.get("http://localhost:5001/api/auth/profile", { withCredentials: true });
+                const { data } = await Axios.get("auth/profile", { withCredentials: true });
                 setUser(data);
                 reset(data);
             } 
@@ -48,7 +49,7 @@ export default function Profile() {
     const onSubmit = async (formData) => {
         setLoading(true);
         try {
-            const { data } = await axios.put("http://localhost:5001/api/auth/updateProfile", formData, { withCredentials: true });
+            const { data } = await Axios.put("auth/updateProfile", formData, { withCredentials: true });
             setUser(data.user);
             updateProfile(data.user);
             setIsEditing(false);
@@ -68,7 +69,7 @@ export default function Profile() {
 
     const handleLogout = async () => {
         try {
-            await axios.post("http://localhost:5001/api/auth/logout", {}, { withCredentials: true });
+            await Axios.post("auth/logout", {}, { withCredentials: true });
             window.location.href = "/";
         } 
         catch (error) {

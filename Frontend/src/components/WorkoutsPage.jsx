@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Timer, Flame, Heart, Search, Filter, ChevronRight, Star, Trophy, Dumbbell, Zap, Users } from 'lucide-react';
 import WorkoutComponent from './WorkoutComponent';
-import axiosInstance from "../lib/Axios.jsx"
 import { useAuthStore } from '../Store/useAuthStore.jsx';
+import Axios from '../lib/Axios.jsx';
 
 
 const WorkoutsPage = () => {
@@ -20,7 +20,7 @@ const WorkoutsPage = () => {
     useEffect(() => {
         const fetchWorkouts = async () => {
             try {
-                const res = await axiosInstance.get('/tutorial/fetch'); // Replace with your actual API endpoint
+                const res = await Axios.get('tutorial/fetch'); // Replace with your actual API endpoint
                 setWorkouts(res.data.tutorials); 
             } catch (error) {
                 console.error('Error fetching workouts:', error);
@@ -42,7 +42,7 @@ const WorkoutsPage = () => {
                         return [...prev, workoutId];
                     }
                 });
-                const response = await axiosInstance.patch(`/tutorial/like/${workoutId}`, {
+                const response = await Axios.patch(`tutorial/like/${workoutId}`, {
                     userid  : authUser._id,
                 });
         

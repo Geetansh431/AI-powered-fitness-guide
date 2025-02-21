@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axiosInstance from "../lib/Axios.jsx";
+import Axios from "../lib/Axios.jsx";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -8,7 +8,7 @@ export const useAuthStore = create((set) => ({
     isCheckingAuth: true,
     checkAuth: async () => {
         try {
-            const res = await axiosInstance.get("/auth/check", { withCredentials: true });
+            const res = await Axios.get("auth/check", { withCredentials: true });
             set({ authUser: res.data, isCheckingAuth: false });
         } catch (error) {
             console.log("Error in CheckAuth:", error);
@@ -17,7 +17,7 @@ export const useAuthStore = create((set) => ({
     },
     signup: async (data, navigate) => {
         try {
-            const res = await axiosInstance.post("/auth/signup", data, { withCredentials: true });
+            const res = await Axios.post("auth/signup", data, { withCredentials: true });
             localStorage.setItem("activationToken", res.data.activationToken);
             set({ authUser: res.data });
             toast.success("OTP sent to your mail");
@@ -29,7 +29,7 @@ export const useAuthStore = create((set) => ({
     },
     login: async (data) => {
         try {
-            const res = await axiosInstance.post("/auth/login", data, { withCredentials: true });
+            const res = await Axios.post("auth/login", data, { withCredentials: true });
             if (res.data) {
                 set({ authUser: res.data });
                 toast.success("Logged in Successfully");
@@ -48,7 +48,7 @@ export const useAuthStore = create((set) => ({
     },
     logout: async () => {
         try {
-            await axiosInstance.post("/auth/logout", {}, { withCredentials: true });
+            await Axios.post("auth/logout", {}, { withCredentials: true });
             set({ authUser: null });
             toast.success("Logged Out Successfully");
             // You can use a navigate function here if you prefer programmatic redirection
@@ -60,7 +60,7 @@ export const useAuthStore = create((set) => ({
     },
     updateProfile: async (data) => {
         try {
-            const res = await axiosInstance.put("/auth/updateProfile", data, { withCredentials: true });
+            const res = await Axios.put("auth/updateProfile", data, { withCredentials: true });
             set({ authUser: res.data });
             toast.success("Profile updated successfully");
         } catch (error) {
@@ -69,7 +69,7 @@ export const useAuthStore = create((set) => ({
     },
     getLeaderboard: async () => {
         try {
-            const res = await axiosInstance.get("/auth/leaderboard", { withCredentials: true });
+            const res = await Axios.get("auth/leaderboard", { withCredentials: true });
             set({ leaderboard: res.data.leaderboard || { personalBest: [], totalReps: [] } });
         } catch (error) {
             console.error("Error fetching leaderboard:", error);

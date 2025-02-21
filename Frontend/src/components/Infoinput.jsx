@@ -1,7 +1,7 @@
 import { useState } from "react";
-import axios from "axios";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import Axios from "../lib/Axios";
 
 export default function Info() {
     const [formData, setFormData] = useState({
@@ -27,8 +27,7 @@ export default function Info() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(
-                "http://localhost:5001/api/auth/updateProfile",
+            await Axios.put("auth/updateProfile",
                 {
                     age: formData.age,
                     height: formData.height,

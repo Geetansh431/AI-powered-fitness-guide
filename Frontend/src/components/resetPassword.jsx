@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
+import Axios from "../lib/Axios";
 
 const ResetPassword = () => {
     const { token } = useParams();
@@ -39,7 +40,7 @@ const ResetPassword = () => {
 
         setLoading(true);
         try {
-            const response = await axios.post(`http://localhost:5001/api/auth/reset?token=${token}`, { password: newPassword });
+            const response = await Axios.post(`auth/reset?token=${token}`, { password: newPassword });
             setSuccess(response.data.message);
             setTimeout(() => navigate("/login"), 2000);
         } 

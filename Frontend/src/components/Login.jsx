@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '../Store/useAuthStore.jsx';
 import { useNavigate } from 'react-router-dom';
+import Axios from '../lib/Axios.jsx';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
@@ -44,28 +45,23 @@ const SignIn = () => {
         const success = await login({ email, password });
         if (success) {
             try {
-                const response = await fetch("http://localhost:5001/api/auth/profile", {
-                    method: "GET",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
+                const response = await Axios.get("auth/profile"); // Using the Axios instance
 
-                if (!response.ok) throw new Error("Failed to fetch profile data");
-
-                const userData = await response.json();
-
+                
+                if (response.status != 200) throw new Error("Failed to fetch profile data");
+                
+                const userData = await response.data;
+                
                 const requiredFields = ["age", "height", "weight", "gender", "fitnessGoals"];
                 const missingFields = requiredFields.filter(field => !userData[field]);
-
+                
                 if (missingFields.length > 0) {
                     navigate("/infoInput", { state: { missingFields } });
                 }
                 else {
                     navigate("/profile");
                 }
-            } 
+            }
             catch (error) {
                 console.error("Error fetching user data:", error);
             }
