@@ -7,12 +7,19 @@ const Exercise = () => {
     const [exerciseData, setExerciseData] = useState({
         pushup_count: 0,
         squat_count: 0,
-        crunch_count: 0
+        crunch_count: 0,
+        feedback: {
+            pushup: "Waiting for data...",
+            squat: "Waiting for data...",
+            crunch: "Waiting for data...",
+        },
     });
+
 
     const navigate = useNavigate();
     const videoStreamURL = "http://127.0.0.1:8080";
-    const exerciseDataURL = "http://127.0.0.1:8080/exercise-data"; 
+    const exerciseDataURL = "http://127.0.0.1:8080/exercise-data";
+
 
     useEffect(() => {
         // Timer for tracking exercise duration
@@ -30,6 +37,7 @@ const Exercise = () => {
                 const response = await fetch(exerciseDataURL);
                 const data = await response.json();
                 setExerciseData(data);
+                console.log("Exercise Data:", data);
             } catch (error) {
                 console.error("Error fetching exercise data:", error);
             }
@@ -89,6 +97,9 @@ const Exercise = () => {
                 <p className="text-lg text-gray-700">Push-ups: {exerciseData.pushup_count}</p>
                 <p className="text-lg text-gray-700">Squats: {exerciseData.squat_count}</p>
                 <p className="text-lg text-gray-700">Crunches: {exerciseData.crunch_count}</p>
+                <p className="text-lg text-gray-700">Feedback pushup: {exerciseData.feedback.pushup}</p>
+                <p className="text-lg text-gray-700">Feedback squat: {exerciseData.feedback.squat}</p>
+                <p className="text-lg text-gray-700">Feedback crunch: {exerciseData.feedback.crunch}</p>
             </div>
         </div>
     );
