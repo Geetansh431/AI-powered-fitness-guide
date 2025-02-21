@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./Routes/auth.routes.js";
 import tutorialRoutes from "./Routes/tutorial.routes.js";
+import challengeRoutes from "./Routes/challenge.routes.js";
 import {connectDB} from "./Lib/db.js"
 
 dotenv.config();
@@ -16,13 +17,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.frontendurl,
     credentials: true,
   })
 );
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tutorial", tutorialRoutes);
+app.use("/api/challenges",challengeRoutes);
 
 app.listen(PORT, () => {
   console.log("App Started on port: " + PORT);
