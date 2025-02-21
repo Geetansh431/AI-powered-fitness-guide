@@ -4,13 +4,27 @@ import { Timer, Activity, Target, Dumbbell, AlertCircle, X, Play, Pause, RotateC
 import { useChallengesStore } from "../Store/useChallengesStore";
 
 const Exercise = () => {
+
+
     const { id, difficulty } = useParams();
     const navigate = useNavigate();
-    const {exercises} = useChallengesStore();
+    const { exercises } = useChallengesStore();
     const exercise = exercises.find(ex => ex.id === parseInt(id));
     const durationData = exercise?.durations?.find(d => d.difficulty === difficulty);
     const duration = durationData?.minutes || 15;
-    
+
+    // Determine port based on exercise name
+    const getPort = () => {
+        const exerciseName = exercise?.name?.toLowerCase();
+        if (exerciseName === 'pushup') return '8002';
+        if (exerciseName === 'squats') return '8003';
+        return '8001';
+    };
+
+    const port = getPort();
+    const videoStreamURL = `http://localhost:${port}`;
+    const exerciseDataURL = `http://localhost:${port}/exercise-data`;
+
     const [timeLeft, setTimeLeft] = useState(duration * 60);
     const [isStreaming, setIsStreaming] = useState(true);
     const [isWorkoutStarted, setIsWorkoutStarted] = useState(false);
@@ -22,15 +36,14 @@ const Exercise = () => {
         totalReps: 0,
         avgSpeed: 0
     });
-    
-    const [exerciseData, setExerciseData] = useState({
-        active_exercise : "",
-        count:0,
-        feedback:"",
-    });
 
-    const videoStreamURL = "http://127.0.0.1:5002";
-    const exerciseDataURL = "http://127.0.0.1:5002/exercise-data";
+    const [exerciseData, setExerciseData] = useState({
+        count: 0,
+        feedback: ""
+    });
+    // const videoStreamURL = "http://localhost:8002";
+    // const exerciseDataURL = "http://localhost:8002/exercise-data";
+
 
 
     useEffect(() => {
@@ -45,7 +58,6 @@ const Exercise = () => {
                     }
                     return prevTime - 1;
                 });
-                // Simulate calorie burn and heart rate changes
                 setCaloriesBurned(prev => prev + 0.15);
                 setHeartRate(prev => Math.min(180, prev + Math.random() * 2 - 1));
             }, 1000);
@@ -53,21 +65,30 @@ const Exercise = () => {
         }
     }, [timeLeft, exercise, isWorkoutStarted, isPaused]);
 
+
     useEffect(() => {
         if (!exercise || !isWorkoutStarted) return;
+
         const fetchExerciseData = async () => {
             try {
                 const response = await fetch(exerciseDataURL);
                 const data = await response.json();
                 setExerciseData(data);
-                console.log("Exercise Data:", data);
+
+                // Update workout stats based on Python data
+                setWorkoutStats(prev => ({
+                    ...prev,
+                    totalReps: data.count,
+                    avgSpeed: Math.round((data.count / ((duration * 60 - timeLeft) / 60)) * 10) / 10
+                }));
             } catch (error) {
                 console.error("Error fetching exercise data:", error);
             }
         };
-        const interval = setInterval(fetchExerciseData, 2000);
+
+        const interval = setInterval(fetchExerciseData, 1000);
         return () => clearInterval(interval);
-    }, [exercise, isWorkoutStarted]);
+    }, [exercise, isWorkoutStarted, timeLeft]);
 
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
@@ -78,11 +99,9 @@ const Exercise = () => {
     const handleStart = () => {
         setIsWorkoutStarted(true);
         setIsPaused(false);
-        // Reset all counts when starting new session
         setExerciseData({
-            pushup_count: 0,
-            squat_count: 0,
-            crunch_count: 0
+            count: 0,
+            feedback: ""
         });
         setCaloriesBurned(0);
         setHeartRate(70);
@@ -139,7 +158,7 @@ const Exercise = () => {
                     <p className="text-gray-400 mb-6">
                         The exercise you're looking for doesn't exist in our database
                     </p>
-                    <button 
+                    <button
                         onClick={() => navigate("/challenges")}
                         className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300"
                     >
@@ -165,8 +184,8 @@ const Exercise = () => {
                                     <div className="flex items-center gap-2 mt-2">
                                         <span className={`px-3 py-1 rounded-full text-sm font-medium
                                             ${difficulty === 'Beginner' ? 'bg-green-500/20 text-green-400' :
-                                            difficulty === 'Intermediate' ? 'bg-yellow-500/20 text-yellow-400' :
-                                            'bg-red-500/20 text-red-400'}`}>
+                                                difficulty === 'Intermediate' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                    'bg-red-500/20 text-red-400'}`}>
                                             {difficulty}
                                         </span>
                                         <span className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-sm">
@@ -251,7 +270,7 @@ const Exercise = () => {
                                                     </div>
                                                 </div>
                                                 <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                                    <div 
+                                                    <div
                                                         className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
                                                         style={{ width: `${(value / (durationData?.calories || 100)) * 100}%` }}
                                                     />
@@ -260,7 +279,43 @@ const Exercise = () => {
                                         ))}
                                     </div>
                                 </div>
+                                <div className="bg-gray-700/50 rounded-2xl p-6">
+                                    <h2 className="text-xl font-semibold text-white mb-4 flex items-center justify-between">
+                                        <span className="flex items-center gap-2">
+                                            <Dumbbell className="w-6 h-6 text-purple-400" />
+                                            Exercise Progress
+                                        </span>
+                                        <span className="text-sm text-gray-400">
+                                            {workoutStats.avgSpeed} reps/min
+                                        </span>
+                                    </h2>
+                                    <div className="space-y-4">
+                                        <div className="relative">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <p className="text-gray-400">Push-ups</p>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-2xl font-bold text-purple-400">
+                                                        {exerciseData.count}
+                                                    </span>
+                                                    <span className="text-gray-500">reps</span>
+                                                </div>
+                                            </div>
+                                            <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                                                    style={{ width: `${(exerciseData.count / (durationData?.target || 30)) * 100}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
 
+                                    {/* Add feedback message from Python */}
+                                    {exerciseData.feedback && (
+                                        <div className="mt-4 p-4 bg-purple-600/20 rounded-xl">
+                                            <p className="text-white">{exerciseData.feedback}</p>
+                                        </div>
+                                    )}
+                                </div>
                                 <button
                                     onClick={handleEnd}
                                     className="w-full bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-xl text-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2"
@@ -292,7 +347,7 @@ const Exercise = () => {
                                         <AlertCircle className="w-16 h-16 text-purple-400 mx-auto mb-4" />
                                         <p className="text-2xl font-semibold text-white mb-2">Unable to load video stream</p>
                                         <p className="text-gray-400">Please check your connection and try again</p>
-                                        <button 
+                                        <button
                                             onClick={() => setIsStreaming(true)}
                                             className="mt-4 bg-purple-600/20 hover:bg-purple-600/30 text-white px-4 py-2 rounded-xl transition-all duration-300"
                                         >
@@ -338,19 +393,6 @@ const Exercise = () => {
                         </div>
                     </div>
                 </div>
-
-                <button
-                    onClick={handleEnd}
-                    className="absolute bottom-4 right-4 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105"
-                >
-                    End Session
-                </button>
-            </div>
-
-            <div className="mt-6 bg-white p-6 rounded-lg shadow-lg">
-                <h2 className="text-xl font-semibold text-gray-800">Exercise Count</h2>
-                <p className="text-lg text-gray-700">Push-ups: {exerciseData.count}</p>
-                <p className="text-lg text-gray-700">Feedback for {exerciseData.active_exercise} : {exerciseData.feedback}</p>
             </div>
         </div>
     );

@@ -85,7 +85,7 @@ def index():
 
 if __name__ == "__main__":
     try:
-        app.run(host='0.0.0.0', port=5003, debug=True)
+        app.run(host='0.0.0.0', port=8001, debug=True)
     finally:
         cap.release()
         cv2.destroyAllWindows()
